@@ -11,6 +11,7 @@ import {
   faChevronUp,
   faCopy,
 } from "@fortawesome/free-solid-svg-icons";
+import { Icon } from "@iconify/react";
 
 type Item = {
   index: number;
@@ -115,10 +116,14 @@ function PanelAccount({ isOpen }: MyProps) {
                   {item.account.slice(0, 8) + " ... " + item.account.slice(-6)}
                 </span>
               </button>
-              <FontAwesomeIcon
-                icon={faCopy}
+              <Icon
+                icon="ph:copy-light"
                 className="self-center text-gray-800 cursor-pointer px-4"
               />
+              {/* <FontAwesomeIcon
+                icon={faCopy}
+                className="self-center text-gray-800 cursor-pointer px-4"
+              /> */}
             </li>
           ))}
         </ul>

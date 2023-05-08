@@ -1,0 +1,106 @@
+{
+  "mainnet": [
+    {
+      "id": "ethereum",
+      "address": "0x2d5d7d31F671F86C782533cc367F14109a082712"
+    },
+    {
+      "id": "binance",
+      "address": "0x2d5d7d31F671F86C782533cc367F14109a082712"
+    },
+    {
+      "id": "avalanche",
+      "address": "0x2d5d7d31F671F86C782533cc367F14109a082712"
+    },
+    {
+      "id": "polygon",
+      "address": "0x2d5d7d31F671F86C782533cc367F14109a082712"
+    },
+    {
+      "id": "fantom",
+      "address": "0x2d5d7d31F671F86C782533cc367F14109a082712"
+    },
+    {
+      "id": "moonbeam",
+      "address": "0x2d5d7d31F671F86C782533cc367F14109a082712"
+    },
+    {
+      "id": "aurora",
+      "address": "0x2d5d7d31F671F86C782533cc367F14109a082712"
+    },
+    {
+      "id": "arbitrum",
+      "address": "0x2d5d7d31F671F86C782533cc367F14109a082712"
+    },
+    {
+      "id": "celo",
+      "address": "0x2d5d7d31F671F86C782533cc367F14109a082712"
+    },
+    {
+      "id": "kava",
+      "address": "0x2d5d7d31F671F86C782533cc367F14109a082712"
+    },
+    {
+      "id": "filecoin",
+      "address": "0x2d5d7d31F671F86C782533cc367F14109a082712"
+    }
+  ],
+  "testnet": [
+    {
+      "id": "ropsten",
+      "address": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"
+    },
+    {
+      "id": "ethereum",
+      "address": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"
+    },
+    {
+      "id": "binance",
+      "address": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"
+    },
+    {
+      "id": "avalanche",
+      "address": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"
+    },
+    {
+      "id": "polygon",
+      "address": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"
+    },
+    {
+      "id": "fantom",
+      "address": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"
+    },
+    {
+      "id": "moonbeam",
+      "address": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"
+    },
+    {
+      "id": "aurora",
+      "address": "0xA2C84547Db9732B27D45c06218DDAEFcc71e452D"
+    },
+    {
+      "id": "celo",
+      "address": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"
+    },
+    {
+      "id": "arbitrum",
+      "address": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"
+    },
+    {
+      "id": "kava",
+      "address": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"
+    },
+    {
+      "id": "optimism",
+      "address": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"
+    },
+    {
+      "id": "base",
+      "address": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"
+    },
+    {
+      "id": "filecoin",
+      "address": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6"
+    }
+  ]
+}

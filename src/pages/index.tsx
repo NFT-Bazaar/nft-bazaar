@@ -40,7 +40,7 @@ export default function Home() {
           <PanelAccount isOpen={true}></PanelAccount>
           <PanelSearch isOpen={true}></PanelSearch>
 
-          {/* <div className="px-16 py-4 text-gray-500 bg-gray-200 h-screen w-screen">
+          <div className="px-16 py-4 text-gray-500 bg-gray-200 h-screen w-screen">
             <CardDetail {...card}></CardDetail>
             <Card1></Card1>
             <Card2></Card2>
@@ -49,7 +49,7 @@ export default function Home() {
             <Card5></Card5>
             <Card6></Card6>
             <CardDetail2></CardDetail2>
-            <div className="c2">
+            {/* <div className="c2">
               <button className="b1" onClick={alchemy1}>
                 Alchemy1
               </button>
@@ -62,8 +62,8 @@ export default function Home() {
               alchemyAxelar
             </button>
             <button className="b4">alchemyAxelar2</button>
-            <button className="b5">alchemyAxelar3</button>
-          </div> */}
+            <button className="b5">alchemyAxelar3</button> */}
+          </div>
         </div>
       </main>
       <Footer></Footer>

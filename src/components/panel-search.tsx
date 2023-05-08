@@ -35,7 +35,7 @@ function PanelSearch({ isOpen }: MyProps) {
     <div
       className={
         (isOpen ? "w-100 transition" : "w-100 transition") +
-        " w-full max-w-sm z-[1035] h-screen pt-2 px-4 border-r-2 border-gray-200 pt-14"
+        " w-full max-w-sm z-[1035] h-screen pt-6 px-4 border-r-2 border-gray-200 pt-14"
       }
     >
       {texts.map((item, index) => (

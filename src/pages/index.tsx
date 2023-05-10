@@ -6,6 +6,8 @@ const inter = Inter({ subsets: ["latin"] });
 import alchemy1 from "../scripts/alchemy1.js";
 import alchemy2 from "../scripts/alchemy2.js";
 import alchemyAxelar from "../scripts/alchemyAxelar.js";
+// import connetMetamask from "../scripts/metamask.js";
+
 import CardDetail, { CardDetailProps } from "../components/card-detail";
 import Card1 from "../components/card1";
 import Card2 from "../components/card2";
@@ -19,6 +21,8 @@ import Sidebar2 from "../components/sidebar2";
 import Header2 from "../components/header2";
 import PanelAccount from "../components/panel-account";
 import PanelSearch from "../components/panel-search";
+import TabBarSearch from "../components/tabbar-search";
+import Tabs from "../components/tabs";
 
 export default function Home() {
   const card: CardDetailProps = {
@@ -40,7 +44,9 @@ export default function Home() {
           <PanelAccount isOpen={true}></PanelAccount>
           <PanelSearch isOpen={true}></PanelSearch>
 
-          <div className="px-16 py-4 text-gray-500 bg-gray-200 h-screen w-screen">
+          <div className="px-0 py-0 text-gray-500 bg-gray-200 h-screen w-screen">
+            {/* <TabBarSearch></TabBarSearch> */}
+            <Tabs id="search-bar"></Tabs>
             <CardDetail {...card}></CardDetail>
             <Card1></Card1>
             <Card2></Card2>

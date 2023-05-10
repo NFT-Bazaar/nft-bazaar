@@ -2,7 +2,7 @@ import react from "react";
 
 function Footer() {
   return (
-    <footer className="footer footer-center  w-full p-4 bg-gray-800 text-gray-500">
+    <footer className="footer footer-center  w-full p-4 bg-gray-700 text-gray-500">
       <div className="text-center">
         <p>
           Copyright © 2023 -

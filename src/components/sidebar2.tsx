@@ -18,27 +18,27 @@ function Sidebar2(props: {}) {
   const [isOpenWallet, setIsOpenWallet] = useState(false);
   const [isOpenExchange, setIsOpenExchange] = useState(false);
 
-  useEffect(() => {
-    setIsOpenSearch(!isOpenSearch);
-    setIsOpenWallet(false);
-    setIsOpenExchange(false);
-  }, [isOpenSearch]);
-  useEffect(() => {
-    setIsOpenWallet(!isOpenWallet);
-    setIsOpenSearch(false);
-    setIsOpenExchange(false);
-  }, [isOpenWallet]);
-  useEffect(() => {
-    setIsOpenExchange(!isOpenExchange);
-    setIsOpenSearch(false);
-    setIsOpenWallet(false);
-  }, [isOpenExchange]);
+  // useEffect(() => {
+  //   setIsOpenSearch(!isOpenSearch);
+  //   setIsOpenWallet(false);
+  //   setIsOpenExchange(false);
+  // }, [isOpenSearch]);
+  // useEffect(() => {
+  //   setIsOpenWallet(!isOpenWallet);
+  //   setIsOpenSearch(false);
+  //   setIsOpenExchange(false);
+  // }, [isOpenWallet]);
+  // useEffect(() => {
+  //   setIsOpenExchange(!isOpenExchange);
+  //   setIsOpenSearch(false);
+  //   setIsOpenWallet(false);
+  // }, [isOpenExchange]);
 
   return (
     <div className="flex flex-row">
       <nav
         id="sidebar2"
-        className="bg-gray-60 w-16 flex flex-col p-2 h-[calc(100vh)] left-0 border-gray-800 bg-gray-500"
+        className="bg-gray-60 w-16 flex flex-col p-2 h-[calc(100vh)] left-0 border-gray-200 bg-gray-200"
         // style={{ backgroundColor: "#C2C238" }}
       >
         <div className="mt-8 w-12">
@@ -46,9 +46,9 @@ function Sidebar2(props: {}) {
             {navs.map(function (nav, index) {
               return (
                 <li
-                  onClick={nav.toggle}
+                  onClick=${nav.toggle}
                   key={index}
-                  className="mt-4 mb-2 transition duration-150 ease-in-out cursor-pointer"
+                  className="mt-3 mb-2 pt-3 transition duration-150 ease-in-out cursor-pointer hover:bg-gray-400 hover:rounded-md"
                   data-te-sidenav-toggle-ref
                   data-te-target="#panel2"
                   aria-controls="#panel2"

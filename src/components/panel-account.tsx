@@ -1,4 +1,12 @@
-import react, { useState, useEffect } from "react";
+import react, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  createContext,
+  useId,
+} from "react";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Sidenav, initTE } from "tw-elements";
@@ -18,29 +26,35 @@ import connectKeplr from "../scripts/keplr";
 import connectMetamask from "../scripts/metamask";
 import { Vampiro_One } from "next/font/google";
 
-import { ItemBar } from "./tabs";
+const metamaskImage: string = "/static/images/metamask.svg";
+const keplrImage: string = "/static/images/keplr.svg";
 
-import BarContext from "../context/bar-context";
-
-import { useContext } from "react";
-
-type Account = {
-  text?: string;
-  image: string;
-  account: string;
-};
+var panelAccountId: string;
 
 type MyProps = {
-  isOpen: boolean;
+  isOpen?: boolean;
 };
 interface Wallet {
   name: string;
   image: string;
   account: string;
 }
+export type Account = {
+  key: string;
+  text?: string;
+  image: string;
+  account: string;
+};
+export type AccountA = {
+  items: Account[];
+  action: (action: string, account: Account) => any;
+};
+export type AccountContextType = {
+  stateAccount: AccountA;
+  setStateAccount: (accounts: Account[]) => void;
+};
+export const AccountContext = createContext(null);
 
-const metamaskImage: string = "/static/images/metamask.svg";
-const keplrImage: string = "/static/images/keplr.svg";
 const wallets: Wallet[] = [
   { name: "metamask", image: "/static/images/metamask.svg", account: "" },
   { name: "keplr", image: "/static/images/keplr.svg", account: "" },
@@ -52,56 +66,54 @@ const wallets: Wallet[] = [
   { name: "coinbase", image: "/static/images/coinbase.svg", account: "" },
 ];
 
-function PanelAccount({ isOpen }: MyProps) {
-  const [accounts, setAccounts] = useState<Account[]>([]);
+export function initialStateAccount(): Account[] {
+  return [
+    {
+      key: "1",
+      text: "account 1",
+      image: "/static/images/metamask.svg",
+      account: "0xC5331Cc3BBE5A060de7d851fF33c2c5f1b611F16",
+    },
+    {
+      key: "2",
+      text: "account 2",
+      image: "/static/images/metamask.svg",
+      account: "0xCDB1af9f423E438694e9F8f447aa35b3fDe2DD81",
+    },
+    {
+      key: "3",
+      text: "account 3",
+      image: "/static/images/metamask.svg",
+      account: "0x82455a57FaB9b75c84bF8Daef352d9EfFF44f93f",
+    },
+    {
+      key: "4",
+      text: "account 4",
+      image: "/static/images/keplr.svg",
+      account: "0xCDB1af9f423E438694e9F8f447aa35b3fDe2DD81",
+    },
+  ];
+}
 
-  const { bars, setBars } = useContext(BarContext);
+function PanelAccount(props: MyProps) {
+  const { stateAccount, setStateAccount } = useContext(
+    AccountContext
+  ) as AccountContextType;
 
-  // const accounts: Account[] = [
-  //   {
-  //     text: "account 1",
-  //     image: "/static/images/metamask.svg",
-  //     account: "0xC5331Cc3BBE5A060de7d851fF33c2c5f1b611F16",
-  //   },
-  //   {
-  //     text: "account 2",
-  //     image: "/static/images/metamask.svg",
-  //     account: "0xCDB1af9f423E438694e9F8f447aa35b3fDe2DD81",
-  //   },
-  //   {
-  //     text: "account 3",
-  //     image: "/static/images/metamask.svg",
-  //     account: "0x82455a57FaB9b75c84bF8Daef352d9EfFF44f93f",
-  //   },
-  //   {
-  //     text: "account 4",
-  //     image: "/static/images/keplr.svg",
-  //     account: "0xCDB1af9f423E438694e9F8f447aa35b3fDe2DD81",
-  //   },
-  // ];
-
-  // const [isClient, setIsClient] = useState(false);
-
-  // useEffect(() => {
-  //   setIsClient(true);
-  // }, []);
-
-  // useEffect(() => {
-  //   if (isClient) {
-  //     //initTE({ Sidenav });
-  //   }
-  // }, [isClient]);
+  panelAccountId = useId();
 
   return (
     <div
-      className={
-        (isOpen ? "w-80 transition" : "w-0 transition") +
-        " border-r-2 border-gray-200 text-gray-500 rounded-tr"
-      }
+      id={panelAccountId}
+      className="border-r-2 border-gray-200 text-gray-500 rounded-tr w-0"
+      style={{ transition: "width 0.5s" }}
     >
-      <div className="flex space-x-4 border-b-2 p-2 border-gray-200 h-16 place-content-center bg-gray-200 rounded-tr">
+      <div className="flex space-x-4 border-b-2 p-2 border-gray-200 h-16 place-content-center bg-gray-200 rounded-tr overflow-x-hidden whitespace-nowrap">
         {wallets.map((x, index) => (
-          <div key={x.name} className="hover:bg-gray-400 hover:rounded p-2">
+          <div
+            key={x.name}
+            className="hover:bg-gray-400 hover:rounded p-2 whitespace-nowrap"
+          >
             <Image
               className="cursor-pointer"
               key={x.name}
@@ -116,21 +128,15 @@ function PanelAccount({ isOpen }: MyProps) {
           </div>
         ))}
       </div>
-      <nav id="panel2" className="z-[1035] h-screen w-80 pt-2">
+      <nav className="z-[1035] h-screen w-70 pt-2">
         <ul className="relative m-0 list-none" data-te-sidenav-menu-ref>
-          {accounts.map((account: Account) => (
+          {[stateAccount.items].flat().map((account: Account) => (
             <li key={account.account} className="flex flex-row relative">
               <button
                 className="flex flex-auto h-10 cursor-pointer items-center truncate rounded-[5px] px-4 py-2 text-[0.8rem] text-gray-500 
-                 hover:bg-slate-50 hover:text-inherit hover:outline-none"
+                hover:bg-slate-50 hover:text-inherit hover:outline-none"
                 data-te-sidenav-link-ref
-                onClick={() =>
-                  addTab({
-                    text: ellipsisHash(account.account),
-                    count: 0,
-                    definition: "",
-                  } as ItemBar)
-                }
+                onClick={() => stateAccount.action("click", account)}
               >
                 {account.image && (
                   <div className="mr-[0.8rem] h-6 w-6 relative">
@@ -167,14 +173,9 @@ function PanelAccount({ isOpen }: MyProps) {
     </div>
   );
 
-  function addTab(bar: ItemBar) {
-    const newBars = Array.from(new Set([...bars, ...[bar].flat()]));
-    setBars(newBars);
-  }
-
   async function connectWallet(wallet: string) {
     var newAddresses: string[] = [];
-    var newAccounts: Account[] = [];
+    var newAccounts: Wallet[] = [];
     switch (wallet) {
       case "metamask":
         newAddresses = (await connectMetamask()) || [];
@@ -214,6 +215,23 @@ function PanelAccount({ isOpen }: MyProps) {
   function removeAccount(account: string) {
     var data: Account[] = accounts.filter((acc) => acc.account !== account);
     setAccounts(data);
+  }
+}
+
+export function toggleAccount(toggle?: boolean) {
+  // if (rootRef.current) {
+  // }
+  var tag = document.getElementById(panelAccountId);
+  if (!tag) return;
+
+  var isOpen = true;
+  if (tag.classList.contains("w-0")) isOpen = false;
+  if (toggle === false || isOpen) {
+    tag.classList.add("w-0");
+    tag.classList.remove("w-1/4");
+  } else {
+    tag.classList.add("w-1/4");
+    tag.classList.remove("w-0");
   }
 }
 

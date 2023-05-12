@@ -1,61 +1,75 @@
-import react, { useState } from "react";
+import react, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  createContext,
+  useId,
+} from "react";
+
 // import Hashes from "jshashes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
-import BarContext from "../context/bar-context";
-
-export type ItemBar = {
+export type ItemTab = {
+  key: string;
   text: string;
   count: number;
   definition: string;
 };
+export type ItemTabA = {
+  items: ItemTab[];
+  action: (action: string, tab: ItemTab) => any;
+};
+export type TabContextType = {
+  stateTab: ItemTabA;
+  setStateTab: (tabs: ItemTab[]) => void;
+};
+export const TabContext = createContext<TabContextType | null>(null); //(initialStateTab);
 
-var id: string = "";
-
-export default function Tabs(props: { id: string }) {
-  //[...Array(10).keys()]
-  //[ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-  const a = [1, 2, 3, 4].map(() => ({
+export function initialStateTab(): ItemTab[] {
+  return [
+    1,
+    2,
+    3,
+    4, //5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 17,
+    18,
+    19,
+    20,
+  ].map((x) => ({
+    key: x.toString(),
     text: Math.random() < 0.5 ? "wallet" : "search",
     count: 4,
     definition: "{ metamask: '' }",
   }));
-  const [bars, setBars] = useState<ItemBar[]>(a);
+}
 
-  id = props.id;
+export default function Tabs(props: {}) {
+  const { stateTab, setStateTab } = useContext(TabContext) as TabContextType;
+
   return (
-    // <ul
-    //   id={props.id}
-    //   className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-gray-200 dark:border-gray-700
-    //   dark:text-gray-400 overflow-x-auto
-    //  min-w-full px-4 sm:px-6 md:px-0 overflow-hidden lg:overflow-auto scrollbar:!w-1.5 scrollbar:!h-1.5 scrollbar:bg-transparent
-    // scrollbar-track:!bg-slate-100 scrollbar-thumb:!rounded scrollbar-thumb:!bg-slate-300 scrollbar-track:!rounded dark:scrollbar-track:!bg-slate-500/[0.16]
-    // dark:scrollbar-thumb:!bg-slate-500/50 max-h-96 lg:supports-scrollbars:pr-2 lg:max-h-96"
-    // >
-    <BarContext.Provider value={{ bars, setBars }}>
-      <div className="w-500 px-2 grid grid-cols-1 gap-4 lg:col-span-3 relative  sm:overflow-hidden hidden sm:block bg-gray-700 border-gray-200">
-        <ul
-          id={props.id}
-          className="-mb-px flex space-x-1 overflow-x-auto
-                    flex-none min-w-full px-4 sm:px-6 md:px-0 overflow-hidden lg:overflow-auto scrollbar:!w-1.5 scrollbar:!h-1.5 scrollbar:bg-transparent 
+    <div className="px-2 relative sm:block bg-gray-700 border-gray-200 items-start">
+      <ul
+        className="-mb-px flex space-x-1 overflow-hidden
+                    min-w-full px-4 sm:px-6 md:px-0  
+                    scrollbar:!w-1.5 scrollbar:!h-1.5 scrollbar:bg-transparent 
                     scrollbar-track:!bg-slate-100 scrollbar-thumb:!rounded scrollbar-thumb:!bg-slate-300 scrollbar-track:!rounded 
                     dark:scrollbar-track:!bg-slate-500/[0.16] dark:scrollbar-thumb:!bg-slate-500/50 max-h-96 lg:supports-scrollbars:pr-2 lg:max-h-96"
-        >
-          {bars.map((bar) => (
-            <li className="mr-1" key={Math.floor(Math.random() * 10e6) + 1}>
-              <a
-                href="#"
-                aria-current="page"
-                className="inline-block py-2 px-4 text-gray-600 bg-gray-200 focus:bg-gray-100 focus:bg-gray-100 rounded-t-lg active dark:bg-gray-700 dark:text-gray-500"
-              >
-                {bar.text}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </BarContext.Provider>
+      >
+        {[stateTab.items].flat().map((tab: ItemTab, Action) => (
+          <li className="mr-1" key={Math.floor(Math.random() * 10e6) + 1}>
+            <button
+              aria-current="page"
+              className="inline-block py-2 px-4 text-gray-600 bg-gray-200 focus:bg-gray-100 hover:bg-gray-100 rounded-t-lg 
+                active dark:bg-gray-700 dark:text-gray-500"
+              onClick={() => stateTab.action("click", tab)}
+            >
+              {tab ? tab.text : ""}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 
   function RemoveTab(key: string) {
@@ -71,6 +85,18 @@ export default function Tabs(props: { id: string }) {
   }
 }
 
+// export function myProfileTab(stateTab: ItemTab[], accounts: Account[]) {
+//   if (stateTab.find((x) => x.key === "myProfile") == undefined) {
+//     const profileTab: ItemTab = {
+//       key: "myProfile",
+//       text: "myProfile",
+//       count: 0,
+//       definition: "",
+//     };
+//     const newTabs = [profileTab, ...tabs];
+//     setStateTab(newTabs);
+//   }
+// }
 // export function AddTab(bar: ItemBar) {
 //   var data: ItemBar[] = Array.from(new Set([...bars, ...bar]));
 //   setBars(data);

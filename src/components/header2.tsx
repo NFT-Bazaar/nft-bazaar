@@ -5,8 +5,8 @@ function Header2(props: {}) {
   const logo1 = "/static/images/logo1.png";
   const nftBazaar2 = "/static/images/nft-bazaar2.png";
   return (
-    <div className="flex flex-shrink-0 bg-transparent">
-      <div className="flex-shrink-0 px-4 py-3 bg-gray-700 w-full">
+    <div className="sticky top-0 flex flex-shrink-0 bg-transparent w-full bg-gray-700">
+      <div className="flex-shrink-0 px-4 py-3 bg-gray-700">
         <button className="flex items-center block">
           <div className="h-8 w-8 relative">
             <Image

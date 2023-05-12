@@ -29,24 +29,19 @@ import { Vampiro_One } from "next/font/google";
 const metamaskImage: string = "/static/images/metamask.svg";
 const keplrImage: string = "/static/images/keplr.svg";
 
-var panelAccountId: string;
-
-type MyProps = {
-  isOpen?: boolean;
-};
 interface Wallet {
   name: string;
   image: string;
   account: string;
 }
 export type Account = {
-  key: string;
   text?: string;
   image: string;
   account: string;
 };
 export type AccountA = {
   items: Account[];
+  isOpen: boolean;
   action: (action: string, account: Account) => any;
 };
 export type AccountContextType = {
@@ -69,43 +64,38 @@ const wallets: Wallet[] = [
 export function initialStateAccount(): Account[] {
   return [
     {
-      key: "1",
       text: "account 1",
       image: "/static/images/metamask.svg",
       account: "0xC5331Cc3BBE5A060de7d851fF33c2c5f1b611F16",
     },
-    {
-      key: "2",
-      text: "account 2",
-      image: "/static/images/metamask.svg",
-      account: "0xCDB1af9f423E438694e9F8f447aa35b3fDe2DD81",
-    },
-    {
-      key: "3",
-      text: "account 3",
-      image: "/static/images/metamask.svg",
-      account: "0x82455a57FaB9b75c84bF8Daef352d9EfFF44f93f",
-    },
-    {
-      key: "4",
-      text: "account 4",
-      image: "/static/images/keplr.svg",
-      account: "0xCDB1af9f423E438694e9F8f447aa35b3fDe2DD81",
-    },
+    // {
+    //   text: "account 2",
+    //   image: "/static/images/metamask.svg",
+    //   account: "0xCDB1af9f423E438694e9F8f447aa35b3fDe2DD81",
+    // },
+    // {
+    //   text: "account 3",
+    //   image: "/static/images/metamask.svg",
+    //   account: "0x82455a57FaB9b75c84bF8Daef352d9EfFF44f93f",
+    // },
+    // {
+    //   text: "account 4",
+    //   image: "/static/images/keplr.svg",
+    //   account: "0xCDB1af9f423E438694e9F8f447aa35b3fDe2DD81",
+    // },
   ];
 }
 
-function PanelAccount(props: MyProps) {
+function PanelAccount(props: {}) {
   const { stateAccount, setStateAccount } = useContext(
     AccountContext
   ) as AccountContextType;
 
-  panelAccountId = useId();
-
   return (
     <div
-      id={panelAccountId}
-      className="border-r-2 border-gray-200 text-gray-500 rounded-tr w-0"
+      className={`border-r-2 border-gray-200 text-gray-500 rounded-tr ${
+        stateAccount.isOpen ? "w-1/4" : "w-0"
+      }`}
       style={{ transition: "width 0.5s" }}
     >
       <div className="flex space-x-4 border-b-2 p-2 border-gray-200 h-16 place-content-center bg-gray-200 rounded-tr overflow-x-hidden whitespace-nowrap">
@@ -131,7 +121,10 @@ function PanelAccount(props: MyProps) {
       <nav className="z-[1035] h-screen w-70 pt-2">
         <ul className="relative m-0 list-none" data-te-sidenav-menu-ref>
           {[stateAccount.items].flat().map((account: Account) => (
-            <li key={account.account} className="flex flex-row relative">
+            <li
+              key={account.account}
+              className="flex flex-row relative overflow-x-hidden whitespace-nowrap"
+            >
               <button
                 className="flex flex-auto h-10 cursor-pointer items-center truncate rounded-[5px] px-4 py-2 text-[0.8rem] text-gray-500 
                 hover:bg-slate-50 hover:text-inherit hover:outline-none"
@@ -175,7 +168,7 @@ function PanelAccount(props: MyProps) {
 
   async function connectWallet(wallet: string) {
     var newAddresses: string[] = [];
-    var newAccounts: Wallet[] = [];
+    var newAccounts: Account[] = [];
     switch (wallet) {
       case "metamask":
         newAddresses = (await connectMetamask()) || [];
@@ -198,14 +191,16 @@ function PanelAccount(props: MyProps) {
   }
 
   function updateList(newAccounts: Account[]) {
-    var data: Account[] = Array.from(new Set([...accounts, ...newAccounts]));
+    var data: Account[] = Array.from(
+      new Set([...stateAccount.items, ...newAccounts])
+    );
 
     const uniqueList: any = Array.from(
       new Set(data.map((obj) => obj.account))
     ).map((account) => {
       return data.find((obj) => obj.account === account);
     });
-    setAccounts(uniqueList);
+    setStateAccount({ items: uniqueList, isOpen: stateAccount.isOpen });
   }
 
   function ellipsisHash(hash: string) {
@@ -213,25 +208,10 @@ function PanelAccount(props: MyProps) {
   }
 
   function removeAccount(account: string) {
-    var data: Account[] = accounts.filter((acc) => acc.account !== account);
-    setAccounts(data);
-  }
-}
-
-export function toggleAccount(toggle?: boolean) {
-  // if (rootRef.current) {
-  // }
-  var tag = document.getElementById(panelAccountId);
-  if (!tag) return;
-
-  var isOpen = true;
-  if (tag.classList.contains("w-0")) isOpen = false;
-  if (toggle === false || isOpen) {
-    tag.classList.add("w-0");
-    tag.classList.remove("w-1/4");
-  } else {
-    tag.classList.add("w-1/4");
-    tag.classList.remove("w-0");
+    var data: Account[] = stateAccount.items.filter(
+      (acc) => acc.account !== account
+    );
+    setStateAccount({ items: data, isOpen: stateAccount.isOpen });
   }
 }
 

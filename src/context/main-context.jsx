@@ -1,81 +1,164 @@
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState, createContext, useEffect, useContext } from "react";
 
-// import {
-//   stateTypeSidebar,
-//   setStateTypeSidebar,
-// } from "../components/panel-wallet";
-// import {
-//   stateTypeWallet,
-//   setStateTypeWallet,
-// } from "../components/panel-wallet";
-// import {
-//   stateTypeSearch,
-//   setStateTypeSearch,
-// } from "../components/panel-search";
+import Header2 from "../components/header2";
+import Sidebar from "../components/side-bar";
+import PanelAccount from "../components/panel-account";
+import PanelSearch from "../components/panel-search";
+import Content from "../components/content";
+import Footer from "../components/footer";
+
+import { stateTypeSide, setStateTypeSide } from "../components/side-bar";
 import {
-  TabContext,
-  TabContextType,
-  initialStateTab,
-} from "../components/tabs";
+  stateTypeAccount,
+  setStateTypeAccount,
+} from "../components/panel-account";
+import {
+  stateTypeSearch,
+  setStateTypeSearch,
+} from "../components/panel-search";
+
+import {
+  SideContext,
+  SideContextType,
+  initialStateSide,
+} from "../components/side-bar";
 import {
   AccountContext,
   AccountContextType,
   initialStateAccount,
 } from "../components/panel-account";
+import {
+  SearchContext,
+  SearchContextType,
+  initialStateSearch,
+} from "../components/panel-search";
+import {
+  TabContext,
+  TabContextType,
+  initialStateTab,
+} from "../components/tab-bar";
 
 export const MainContextProvider = ({ children }) => {
-  const [stateAccount, setStateAccount] = useState({
-    items: initialStateAccount(),
-    action: clickAccount,
+  const [stateSide, setStateSide] = useState({
+    items: initialStateSide(),
+    action: clickSide,
   });
-  const [stateTab, setStateTab] = useState({
-    items: initialStateTab(),
-    action: clickTab,
-  });
-
-  const [stateSidebar, setStateSidebar] = useState(null);
-  const [stateSearch, setStateSearch] = useState(null);
-  const [stateExchange, setStateExchange] = useState(null);
-
-  function clickTab(action, item) {
-    var a = 0;
+  function clickSide(action, item) {
+    switch (item.name) {
+      case "wallet":
+        var newState = { ...stateAccount, isOpen: !stateAccount.isOpen };
+        setStateAccount(newState);
+        if (stateSearch.isOpen) {
+          newState = { ...stateSearch, isOpen: false };
+          setStateSearch(newState);
+        }
+        break;
+      case "search":
+        var newState = { ...stateSearch, isOpen: !stateSearch.isOpen };
+        setStateSearch(newState);
+        if (stateAccount.isOpen) {
+          newState = { ...stateAccount, isOpen: false };
+          setStateAccount(newState);
+        }
+        break;
+    }
     console.log(item);
   }
 
+  const [stateAccount, setStateAccount] = useState({
+    isOpen: false,
+    items: initialStateAccount(),
+    action: clickAccount,
+  });
   function clickAccount(action, item) {
     var a = 0;
     console.log(item);
   }
 
-  function setSystemState(newState) {}
+  const [stateSearch, setStateSearch] = useState({
+    isOpen: false,
+    items: initialStateSearch(),
+    action: clickSearch,
+  });
+  function clickSearch(action, item) {
+    var a = 0;
+    console.log(item);
+  }
 
-  // const contextValue = { transmitter, receiver, action, value };
-  // const contextValueSidebar = {
-  //   sidebarState,
-  //   setSidebarState,
-  // };
+  const [stateTab, setStateTab] = useState({
+    items: initialStateTab(),
+    action: clickTab,
+  });
+  function clickTab(action, item) {
+    var a = 0;
+    console.log(item);
+  }
+
+  const contextValueSide = {
+    stateSide,
+    setStateSide,
+  };
   const contextValueAccount = {
     stateAccount,
     setStateAccount,
   };
-  // const contextValueSearch = {
-  //   searchState,
-  //   setSearchState,
-  // };
+  const contextValueSearch = {
+    stateSearch,
+    setStateSearch,
+  };
   const contextValueTab = {
     stateTab,
     setStateTab,
   };
-  // const contextValueExchange = {
-  //   exchangeState,
-  //   setExchangeState,
+
+  //   return (
+  //     <main className="min-h-screen flex flex-col">
+  //       <SearchContext.Provider value={contextValueSearch}>
+  //         {}
+  //       </SearchContext.Provider>
+  //       <contextValueTab.Provider value={contextValueTab}>
+  //         {}
+  //       </contextValueTab.Provider>
+
+  //       <Header2></Header2>
+
+  //       <div className="flex flex-col md:flex-row flex-1">
+  //         <SideContext.Provider value={contextValueSide}>
+  //           <Sidebar></Sidebar>
+  //         </SideContext.Provider>
+  //         <AccountContext.Provider value={contextValueAccount}>
+  //           <PanelAccount></PanelAccount>
+  //         </AccountContext.Provider>
+  //         <PanelSearch></PanelSearch>
+  //         <Content></Content>
+  //       </div>
+  //       <Footer></Footer>
+  //     </main>
+  //   );
   // };
-  // value={contextValueTab}
+
+  // const [stateExchange, setStateExchange] = useState({
+  //   items: initialStateExchange(),
+  //   action: clickExchange,
+  // });
+  // const contextValueExchange = {
+  //   stateExchange,
+  //   setStateExchange,
+  // };
+  // function clickExchange(action, item) {
+  //   var a = 0;
+  //   console.log(item);
+  // }
+
   return (
-    <AccountContext.Provider value={contextValueAccount}>
-      <TabContext.Provider value={contextValueTab}>
-        {children}
-      </TabContext.Provider>
-    </AccountContext.Provider>
+    <SideContext.Provider value={contextValueSide}>
+      <AccountContext.Provider value={contextValueAccount}>
+        <SearchContext.Provider value={contextValueSearch}>
+          <TabContext.Provider value={contextValueTab}>
+            {children}
+          </TabContext.Provider>
+        </SearchContext.Provider>
+      </AccountContext.Provider>
+    </SideContext.Provider>
   );
 };

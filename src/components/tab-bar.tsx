@@ -44,7 +44,7 @@ export function initialStateTab(): ItemTab[] {
   }));
 }
 
-export default function Tabs(props: {}) {
+function Tabbar(props: {}) {
   const { stateTab, setStateTab } = useContext(TabContext) as TabContextType;
 
   return (
@@ -56,7 +56,7 @@ export default function Tabs(props: {}) {
                     scrollbar-track:!bg-slate-100 scrollbar-thumb:!rounded scrollbar-thumb:!bg-slate-300 scrollbar-track:!rounded 
                     dark:scrollbar-track:!bg-slate-500/[0.16] dark:scrollbar-thumb:!bg-slate-500/50 max-h-96 lg:supports-scrollbars:pr-2 lg:max-h-96"
       >
-        {[stateTab.items].flat().map((tab: ItemTab, Action) => (
+        {[stateTab.items].flat().map((tab: ItemTab) => (
           <li className="mr-1" key={Math.floor(Math.random() * 10e6) + 1}>
             <button
               aria-current="page"
@@ -120,3 +120,5 @@ export default function Tabs(props: {}) {
 //         />
 //     </li>`;
 //}
+
+export default Tabbar;

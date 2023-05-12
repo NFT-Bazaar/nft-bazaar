@@ -15,11 +15,16 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 
 import Header2 from "../components/header2";
-import Sidebar2 from "../components/sidebar2";
+import Side from "../components/side-bar";
 import PanelAccount from "../components/panel-account";
 import PanelSearch from "../components/panel-search";
 import Content from "../components/content";
 import Footer from "../components/footer";
+
+import { SideContext } from "../components/side-bar";
+import { AccountContext } from "../components/panel-account";
+import { SearchContext } from "../components/panel-search";
+import { TabContext } from "../components/tab-bar";
 
 import { MainContextProvider } from "../context/main-context";
 
@@ -32,16 +37,18 @@ export default function Home() {
   // }
   // Cookie();
 
-  const [tabs, setTabs] = useState(null);
   return (
     <MainContextProvider>
       <main className="min-h-screen flex flex-col">
         <Header2></Header2>
         <div className="flex flex-col md:flex-row flex-1">
-          {/* flex flex-row h-screen" */}
-          <Sidebar2></Sidebar2>
-          <PanelAccount isOpen={false}></PanelAccount>
-          <PanelSearch isOpen={false}></PanelSearch>
+          {/* <SideContext.Provider value={contextValueSide}> */}
+          <Side></Side>
+          {/* </SideContext.Provider> */}
+          {/* <AccountContext.Provider value={contextValueAccount}> */}
+          <PanelAccount></PanelAccount>
+          {/* </AccountContext.Provider> */}
+          <PanelSearch></PanelSearch>
           <Content></Content>
         </div>
         <Footer></Footer>

@@ -1,6 +1,6 @@
 import react, { useState, useEffect, useRef, useContext, useId } from "react";
 
-import Tabs from "./tabs";
+import Tabbar from "./tab-bar";
 import CardDetail, { CardDetailProps } from "./card-detail";
 import Card1 from "./card1";
 import Card2 from "./card2";
@@ -23,7 +23,7 @@ const card: CardDetailProps = {
 function Content({}) {
   return (
     <div className="px-0 py-0 text-gray-500 bg-gray-200 h-screen w-screen">
-      <Tabs></Tabs>
+      <Tabbar></Tabbar>
       <CardDetail {...card}></CardDetail>
       <Card1></Card1>
       <Card2></Card2>

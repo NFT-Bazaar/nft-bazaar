@@ -35,6 +35,7 @@ interface Wallet {
   account: string;
 }
 export type Account = {
+  name: string;
   text?: string;
   image: string;
   account: string;
@@ -64,6 +65,7 @@ const wallets: Wallet[] = [
 export function initialStateAccount(): Account[] {
   return [
     {
+      name: "metamask1",
       text: "account 1",
       image: "/static/images/metamask.svg",
       account: "0xC5331Cc3BBE5A060de7d851fF33c2c5f1b611F16",
@@ -86,10 +88,16 @@ export function initialStateAccount(): Account[] {
   ];
 }
 
-function PanelAccount(props: {}) {
+interface props {
+  method: (action: any) => void;
+}
+
+function PanelAccount(props: { callbackForMethod }) {
   const { stateAccount, setStateAccount } = useContext(
     AccountContext
   ) as AccountContextType;
+
+  props.callbackForMethod("account", methods);
 
   return (
     <div
@@ -120,8 +128,9 @@ function PanelAccount(props: {}) {
       </div>
       <nav className="z-[1035] h-screen w-70 pt-2">
         <ul className="relative m-0 list-none" data-te-sidenav-menu-ref>
-          {[stateAccount.items].flat().map((account: Account) => (
+          {[stateAccount.items].flat().map((account: Account, idx: number) => (
             <li
+              index={idx}
               key={account.account}
               className="flex flex-row relative overflow-x-hidden whitespace-nowrap"
             >
@@ -166,6 +175,13 @@ function PanelAccount(props: {}) {
     </div>
   );
 
+  function methods(action: string, arg: any) {
+    switch (action) {
+      case "":
+        break;
+    }
+  }
+
   async function connectWallet(wallet: string) {
     var newAddresses: string[] = [];
     var newAccounts: Account[] = [];
@@ -173,14 +189,24 @@ function PanelAccount(props: {}) {
       case "metamask":
         newAddresses = (await connectMetamask()) || [];
         newAccounts = [newAddresses].flat().map((address) => {
-          return { account: address, image: metamaskImage, text: "" };
+          return {
+            name: "metamask",
+            account: address,
+            image: metamaskImage,
+            text: "",
+          };
         });
         break;
 
       case "keplr":
         newAddresses = (await connectKeplr()) || [];
         newAccounts = [newAddresses].flat().map((address) => {
-          return { account: address, image: keplrImage, text: "" };
+          return {
+            name: "keplr",
+            account: address,
+            image: keplrImage,
+            text: "",
+          };
         });
         break;
 
@@ -200,7 +226,11 @@ function PanelAccount(props: {}) {
     ).map((account) => {
       return data.find((obj) => obj.account === account);
     });
-    setStateAccount({ items: uniqueList, isOpen: stateAccount.isOpen });
+    setStateAccount({
+      items: uniqueList,
+      isOpen: stateAccount.isOpen,
+      action: stateAccount.action,
+    });
   }
 
   function ellipsisHash(hash: string) {
@@ -211,7 +241,11 @@ function PanelAccount(props: {}) {
     var data: Account[] = stateAccount.items.filter(
       (acc) => acc.account !== account
     );
-    setStateAccount({ items: data, isOpen: stateAccount.isOpen });
+    setStateAccount({
+      items: data,
+      isOpen: stateAccount.isOpen,
+      action: stateAccount.action,
+    });
   }
 }
 

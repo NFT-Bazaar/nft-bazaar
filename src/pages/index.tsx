@@ -26,7 +26,13 @@ import { AccountContext } from "../components/panel-account";
 import { SearchContext } from "../components/panel-search";
 import { TabContext } from "../components/tab-bar";
 
-import { MainContextProvider } from "../context/main-context";
+import {
+  MainContextProvider,
+  callbackForMethod,
+  // sideCallback,
+  // accountCallback,
+  // searchCallback,
+} from "../context/main-context";
 
 import { cookies } from "next/headers";
 
@@ -40,15 +46,18 @@ export default function Home() {
   return (
     <MainContextProvider>
       <main className="min-h-screen flex flex-col">
-        <Header2></Header2>
+        <Header2 callbackForMethod={callbackForMethod}></Header2>
         <div className="flex flex-col md:flex-row flex-1">
           {/* <SideContext.Provider value={contextValueSide}> */}
-          <Side></Side>
+          <Side
+            // callback={callback}
+            callbackForMethod={callbackForMethod}
+          ></Side>
           {/* </SideContext.Provider> */}
           {/* <AccountContext.Provider value={contextValueAccount}> */}
-          <PanelAccount></PanelAccount>
+          <PanelAccount callbackForMethod={callbackForMethod}></PanelAccount>
           {/* </AccountContext.Provider> */}
-          <PanelSearch></PanelSearch>
+          <PanelSearch callbackForMethod={callbackForMethod}></PanelSearch>
           <Content></Content>
         </div>
         <Footer></Footer>

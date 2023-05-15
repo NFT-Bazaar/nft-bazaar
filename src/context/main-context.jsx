@@ -1,5 +1,7 @@
 import React, { useState, createContext, useEffect, useContext } from "react";
+import Hashes from "jshashes";
 
+import * as constant from "./constant";
 import Header2 from "../components/header2";
 import Sidebar from "../components/side-bar";
 import PanelAccount from "../components/panel-account";
@@ -7,7 +9,11 @@ import PanelSearch from "../components/panel-search";
 import Content from "../components/content";
 import Footer from "../components/footer";
 
-import { stateTypeSide, setStateTypeSide } from "../components/side-bar";
+import {
+  stateTypeSide,
+  setStateTypeSide,
+  ItemTab,
+} from "../components/side-bar";
 import {
   stateTypeAccount,
   setStateTypeAccount,
@@ -38,6 +44,13 @@ import {
   initialStateTab,
 } from "../components/tab-bar";
 
+const Methods = {};
+const Callbacks = {};
+
+export function callbackForMethod(component, methods) {
+  Methods[component] = methods;
+}
+
 export const MainContextProvider = ({ children }) => {
   const [stateSide, setStateSide] = useState({
     items: initialStateSide(),
@@ -65,25 +78,72 @@ export const MainContextProvider = ({ children }) => {
     console.log(item);
   }
 
+  //----------------------------------------------------
+
   const [stateAccount, setStateAccount] = useState({
     isOpen: false,
     items: initialStateAccount(),
     action: clickAccount,
   });
-  function clickAccount(action, item) {
+  function clickAccount(action, account) {
+    if ((action = "click")) {
+      var tab = stateTab.items.find((x) => x.key == "MyProfile");
+      if (tab == undefined) {
+        tab = { key: "MyProfile", text: "Profile", count: 0, definition: "" };
+        var tabs = {
+          items: [...[tab].flat(), ...stateTab.items],
+          action: stateTab.action,
+        };
+        (async () => {
+          await new Promise((resolve) => {
+            setStateTab(tabs);
+            resolve();
+          });
+          Methods["tab"]("focus", { index: 0 });
+        })();
+      } else {
+        Methods["tab"]("focus", { index: 0 });
+      }
+    }
     var a = 0;
-    console.log(item);
+    console.log(account);
   }
+
+  //----------------------------------------------------
 
   const [stateSearch, setStateSearch] = useState({
     isOpen: false,
     items: initialStateSearch(),
     action: clickSearch,
   });
-  function clickSearch(action, item) {
+  function clickSearch(action, searchString) {
+    if ((action = "click")) {
+      var MD5 = new Hashes.MD5();
+      var key = MD5.hex(searchString);
+      var tab = stateTab.items.find((x, index) => x.key == key);
+      if (tab == undefined) {
+        var index = stateTab.items.length;
+        tab = { key: key, text: "Search", count: 0, definition: searchString };
+        var tabs = {
+          items: [...stateTab.items, ...[tab].flat()],
+          action: stateTab.action,
+        };
+        (async () => {
+          await new Promise((resolve) => {
+            setStateTab(tabs);
+            resolve();
+          });
+          Methods["tab"]("focus", { index: index });
+        })();
+      } else {
+        Methods["tab"]("focus", { index: index });
+      }
+    }
     var a = 0;
-    console.log(item);
+    console.log(searchString);
   }
+
+  //----------------------------------------------------
 
   const [stateTab, setStateTab] = useState({
     items: initialStateTab(),
@@ -93,6 +153,8 @@ export const MainContextProvider = ({ children }) => {
     var a = 0;
     console.log(item);
   }
+
+  //----------------------------------------------------
 
   const contextValueSide = {
     stateSide,

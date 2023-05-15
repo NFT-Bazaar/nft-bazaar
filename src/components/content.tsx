@@ -1,4 +1,8 @@
 import react, { useState, useEffect, useRef, useContext, useId } from "react";
+import {
+  MainContextProvider,
+  callbackForMethod,
+} from "../context/main-context";
 
 import Tabbar from "./tab-bar";
 import CardDetail, { CardDetailProps } from "./card-detail";
@@ -23,7 +27,7 @@ const card: CardDetailProps = {
 function Content({}) {
   return (
     <div className="px-0 py-0 text-gray-500 bg-gray-200 h-screen w-screen">
-      <Tabbar></Tabbar>
+      <Tabbar callbackForMethod={callbackForMethod}></Tabbar>
       <CardDetail {...card}></CardDetail>
       <Card1></Card1>
       <Card2></Card2>

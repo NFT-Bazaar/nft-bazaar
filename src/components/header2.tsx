@@ -1,9 +1,10 @@
 import react from "react";
 import Image from "next/image";
 
-function Header2(props: {}) {
+function Header2(props: { callbackForMethod }) {
   const logo1 = "/static/images/logo1.png";
   const nftBazaar2 = "/static/images/nft-bazaar2.png";
+
   return (
     <div className="sticky top-0 flex flex-shrink-0 bg-transparent w-full bg-gray-700">
       <div className="flex-shrink-0 px-4 py-3 bg-gray-700">

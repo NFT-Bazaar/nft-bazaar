@@ -38,12 +38,14 @@ export function initialStateSide(): ItemSide[] {
   ];
 }
 
-function Sidebar(props: {}) {
+function Sidebar(props: { callbackForMethod }) {
   const { stateSide, setStateSide } = useContext(
     SideContext
   ) as SideContextType;
 
   const logo1 = "/static/images/logo1.png";
+
+  props.callbackForMethod("side", methods);
 
   return (
     <div className="flex flex-row">
@@ -78,6 +80,8 @@ function Sidebar(props: {}) {
       </nav>
     </div>
   );
+
+  function methods(action: string, arg?: any) {}
 
   // function handlePanels(toggle: any) {
   //   if (toggle != toggleWallet) toggleWallet(false);

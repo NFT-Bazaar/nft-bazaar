@@ -49,7 +49,7 @@ export default function Home() {
         {/* h-screen */}
         <Header callbackForMethod={callbackForMethod}></Header>
         <main className="min-h-screen flex flex-col top-16 overflow-x-hidden">
-          <div className="flex flex-col md:flex-row flex-1mb-auto">
+          <div className="flex flex-col md:flex-row flex-1mb-auto pb-28">
             <Side callbackForMethod={callbackForMethod}></Side>
             <PanelAccount callbackForMethod={callbackForMethod}></PanelAccount>
             <PanelSearch callbackForMethod={callbackForMethod}></PanelSearch>

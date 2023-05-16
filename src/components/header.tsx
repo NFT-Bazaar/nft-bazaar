@@ -30,7 +30,7 @@ function Header(props: { callbackForMethod }) {
           </div>
         </button>
       </div>
-      <div className="flex-1 flex bg-gray-700 px-6 items-center justify-between">
+      <div className="flex-1 flex bg-gray-700 px-6 items-center justify-between flex-row-reverse">
         <nav>
           <a
             href="#"

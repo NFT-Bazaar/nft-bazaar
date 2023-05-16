@@ -35,7 +35,7 @@ function CardNFT(props: CardDetailProps) {
   } = props;
 
   return (
-    <div className="min-h-screen bg-gray-200 flex justify-center items-center">
+    <div className="bg-gray-200 flex justify-center items-center">
       <div className="max-w-xs container bg-white rounded-xl shadow-lg transform transition duration-500 hover:scale-102 hover:shadow-1xl">
         <div>
           <span className="text-white text-xs font-bold rounded-lg bg-green-500 inline-block mt-4 ml-4 py-1.5 px-4 cursor-pointer">

@@ -80,12 +80,12 @@ function Tabbar(props: { callbackForMethod }) {
               onClick={() => stateTab.action("click", tab)}
             >
               {tab ? tab.text : ""}
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="self-centercursor-pointer pl-4" // text-gray-800
+                onClick={() => removeTab(idx)}
+              />
             </button>
-            <FontAwesomeIcon
-              icon={faTrash}
-              className="self-centercursor-pointer px-4" // text-gray-800
-              onClick={() => removeTab(idx)}
-            />
           </li>
         ))}
       </ul>

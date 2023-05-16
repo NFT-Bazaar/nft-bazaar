@@ -14,7 +14,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 
-import Header2 from "../components/header2";
+import Header from "../components/header";
 import Side from "../components/side-bar";
 import PanelAccount from "../components/panel-account";
 import PanelSearch from "../components/panel-search";
@@ -45,23 +45,19 @@ export default function Home() {
 
   return (
     <MainContextProvider>
-      <main className="min-h-screen flex flex-col">
-        <Header2 callbackForMethod={callbackForMethod}></Header2>
-        <div className="flex flex-col md:flex-row flex-1">
-          {/* <SideContext.Provider value={contextValueSide}> */}
-          <Side
-            // callback={callback}
-            callbackForMethod={callbackForMethod}
-          ></Side>
-          {/* </SideContext.Provider> */}
-          {/* <AccountContext.Provider value={contextValueAccount}> */}
-          <PanelAccount callbackForMethod={callbackForMethod}></PanelAccount>
-          {/* </AccountContext.Provider> */}
-          <PanelSearch callbackForMethod={callbackForMethod}></PanelSearch>
-          <Content></Content>
-        </div>
-        <Footer></Footer>
-      </main>
+      <>
+        {/* h-screen */}
+        <Header callbackForMethod={callbackForMethod}></Header>
+        <main className="min-h-screen flex flex-col top-16 overflow-x-hidden">
+          <div className="flex flex-col md:flex-row flex-1mb-auto">
+            <Side callbackForMethod={callbackForMethod}></Side>
+            <PanelAccount callbackForMethod={callbackForMethod}></PanelAccount>
+            <PanelSearch callbackForMethod={callbackForMethod}></PanelSearch>
+            <Content></Content>
+          </div>
+          <Footer></Footer>
+        </main>
+      </>
     </MainContextProvider>
   );
 }

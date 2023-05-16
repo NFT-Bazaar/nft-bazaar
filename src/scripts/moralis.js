@@ -1,7 +1,8 @@
 //import Web3 from "web3";
 import { ethers, BigNumber } from "ethers";
 import Moralis from "moralis";
-import { EvmChain } from "@moralisweb3/evm-utils";
+// import { EvmChain } from "@moralisweb3/evm-utils";
+import { MoralisNextApi } from "@moralisweb3/next";
 
 // MoralisMainnets = [
 //   { name: "Avalanche Mainnet", chainId: "0xA86A" },
@@ -16,7 +17,7 @@ import { EvmChain } from "@moralisweb3/evm-utils";
 //   { name: "Polygon Mainnet", chainId: "0x89" },
 //   { name: " xDai Chain", chainId: "0x64" },
 // ];
-MoralisMainnets = [
+const MoralisMainnets = [
   { name: "eth", chainId: "0x1", chainIDD: 1 },
   { name: "goerli", chainId: "0x5", chainIDD: 5 },
   { name: "sepolia", chainId: "0xaa36a7", chainIDD: 11155111 },
@@ -32,7 +33,7 @@ MoralisMainnets = [
   { name: "palm", chainId: "0x2a15c308d", chainIDD: 11297108109 },
   { name: "arbitrum", chainId: "0xa4b1", chainIDD: 42161 },
 ];
-MoralisTestnets = [
+const MoralisTestnets = [
   { name: "Avalanche Fuji Testnet", chainId: "0xA869" },
   { name: "Binance Smart Chain Testnet", chainId: "0x61" },
   { name: "Celo Alfajores Testnet", chainId: "0xa4f1" },
@@ -51,7 +52,7 @@ export default async function getNFTMoralis(address) {
   await Moralis.start({
     apiKey: process.env.MORALIS_API_KEY,
   });
-  MoralisMainnets.forEach(async function (chain) {
+  MoralisTestnets.forEach(async function (chain) {
     //await switchChain(net.chainId);
     const settings = { address: address, chain: chain.chainId };
     nfts = { nfts, ...(await Moralis.EvmApi.nft.getWalletNFTs(settings)) };

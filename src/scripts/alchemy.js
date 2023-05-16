@@ -2,7 +2,7 @@
 import { ethers, BigNumber } from "ethers";
 import { Network, Alchemy } from "alchemy-sdk";
 
-AlchemyMainnets = [
+const AlchemyMainnets = [
   { name: "Avalanche Mainnet", chainId: "0xA86A" },
   { name: "Binance Smart Chain Mainnet", chainId: "0x38" },
   { name: "Celo Mainnet", chainId: "0xa4EC" },
@@ -14,7 +14,7 @@ AlchemyMainnets = [
   { name: "Polygon Mainnet", chainId: "0x89" },
   { name: "xDai Chain", chainId: "0x64" },
 ];
-AlchemyTestnets = [
+const AlchemyTestnets = [
   { name: "Avalanche Fuji Testnet", chainId: "0xA87D" },
   { name: "Binance Smart Chain Testnet", chainId: "0x61" },
   { name: "Celo Alfajores Testnet", chainId: "0x43B" },
@@ -29,14 +29,15 @@ AlchemyTestnets = [
 
 export default async function getNFTAlchemy(address) {
   var nfts;
-  AlchemyMainnets.forEach(async function (chain) {
-    //await switchChain(net.chainId);
-    const settings = {
-      apiKey: process.env.ALCHEMY_API_KEY,
-      network: chain.name, //"polygon-mumbai", //net, //chainId2;  //Network.ETH_MAINNET, // Replace with your network.
-    };
-    const alchemy = new Alchemy(settings);
-    nfts = { nfts, ...(await alchemy.nft.getNftsForOwner(address)) };
-  });
+  //AlchemyTestnets.forEach(async function (chain) {
+  //Object.keys(Network).forEach(async function (chain) {
+  //await switchChain(net.chainId);
+  const settings = {
+    apiKey: "ewnNwWyVDNqShvyY5BiNRK4-MNuzQzLl", //process.env.ALCHEMY_API_KEY,
+    network: "polygon-mumbai", //"arb-goerli", //chain, //"polygon-mumbai", //Network.POLYGONZKEVM_TESTNET, //chain.name, //"polygon-mumbai", //net, //chainId2;  //Network.ETH_MAINNET, // Replace with your network.
+  };
+  const alchemy = new Alchemy(settings);
+  nfts = { nfts, ...(await alchemy.nft.getNftsForOwner(address)) };
+  //});
   return nfts;
 }

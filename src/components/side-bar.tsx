@@ -48,10 +48,11 @@ function Sidebar(props: { callbackForMethod }) {
   props.callbackForMethod("side", methods);
 
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row w-16 sticky border-gray-200 bg-gray-200">
       <nav
-        className="bg-gray-60 w-16 flex flex-col p-2 h-[calc(100vh)] left-0 border-gray-200 bg-gray-200"
-        // style={{ backgroundColor: "#C2C238" }}
+        className="sticky top-0 w-full bg-gray-60 flex flex-col p-2 left-0 border-gray-200 bg-gray-200"
+
+        // style={{ backgroundColor: "#C2C238" }}   h-[calc(100vh)]
       >
         <div className="mt-8 w-12">
           <ul className="place-self-center">

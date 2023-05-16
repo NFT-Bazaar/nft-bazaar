@@ -24,6 +24,11 @@ import { Icon } from "@iconify/react";
 
 import connectKeplr from "../scripts/keplr";
 import connectMetamask from "../scripts/metamask";
+
+import getNFTAlchemy from "../scripts/alchemy";
+import getNFTMoralis from "../scripts/moralis";
+import getNFTThirdweb from "../scripts/thirdweb";
+
 import { Vampiro_One } from "next/font/google";
 
 const metamaskImage: string = "/static/images/metamask.svg";
@@ -43,7 +48,7 @@ export type Account = {
 export type AccountA = {
   items: Account[];
   isOpen: boolean;
-  action: (action: string, account: Account) => any;
+  action: (action: string, account: Account, nftList: {}) => any;
 };
 export type AccountContextType = {
   stateAccount: AccountA;
@@ -126,7 +131,7 @@ function PanelAccount(props: { callbackForMethod }) {
           </div>
         ))}
       </div>
-      <nav className="z-[1035] h-screen w-70 pt-2">
+      <nav className="h-screen w-70 pt-2">
         <ul className="relative m-0 list-none" data-te-sidenav-menu-ref>
           {[stateAccount.items].flat().map((account: Account, idx: number) => (
             <li
@@ -138,7 +143,7 @@ function PanelAccount(props: { callbackForMethod }) {
                 className="flex flex-auto h-10 cursor-pointer items-center truncate rounded-[5px] px-4 py-2 text-[0.8rem] text-gray-500 
                 hover:bg-slate-50 hover:text-inherit hover:outline-none"
                 data-te-sidenav-link-ref
-                onClick={() => stateAccount.action("click", account)}
+                onClick={() => getNFTs(account)}
               >
                 {account.image && (
                   <div className="mr-[0.8rem] h-6 w-6 relative">
@@ -235,6 +240,44 @@ function PanelAccount(props: { callbackForMethod }) {
 
   function ellipsisHash(hash: string) {
     return hash.slice(0, 8) + " ... " + hash.slice(-6);
+  }
+
+  async function getNFTs(account: Account) {
+    var nftList = {
+      alchemy: [],
+      moralis: [],
+      thirdweb: [],
+    };
+    nftList = await listNFTs(account);
+    stateAccount.action("click", account, nftList);
+  }
+
+  async function listNFTs(account: Account) {
+    var nftList = {
+      alchemy: [],
+      moralis: [],
+      thirdweb: [],
+    };
+
+    var result = [];
+    await Promise.all(
+      stateAccount.items.map(async () => {
+        await new Promise((resolve) => {
+          getNFTAlchemy(account.account).then((tempResult) => {
+            result = result.concat(tempResult);
+            resolve();
+          });
+        });
+      })
+    );
+
+    nftList.alchemy = nftList.alchemy.concat(result);
+
+    // stateAccount.items.forEach(async (account) => {
+    //   const result = await getNFTMoralis(account.account);
+    //   nftList.moralis = result === undefined ? [] : result;
+    // });
+    return nftList;
   }
 
   function removeAccount(account: string) {

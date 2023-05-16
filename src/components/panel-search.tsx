@@ -63,7 +63,7 @@ function PanelSearch(props: { callbackForMethod }) {
     >
       <div className="flex space-x-4 border-b-2 p-2 border-gray-200 h-16 place-content-center bg-gray-200"></div>
 
-      <div className="w-100 w-full max-w-sm z-[1035] h-screen pt-6 px-4 border-r-2 border-gray-200 pt-14">
+      <div className="w-100 w-full max-w-sm h-screen pt-6 px-4 border-r-2 border-gray-200 pt-14">
         {searchs.map((item, index) => (
           <div key={"search-t-" + index} className="mb-4">
             <label className="block text-gray-500 text-sm font-bold mb-2 whitespace-nowrap">

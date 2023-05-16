@@ -1,12 +1,12 @@
 import react from "react";
 import Image from "next/image";
 
-function Header2(props: { callbackForMethod }) {
+function Header(props: { callbackForMethod }) {
   const logo1 = "/static/images/logo1.png";
   const nftBazaar2 = "/static/images/nft-bazaar2.png";
 
   return (
-    <div className="sticky top-0 flex flex-shrink-0 bg-transparent w-full bg-gray-700">
+    <div className="flex flex-shrink-0 bg-transparent w-full bg-gray-700 -z-1000 top-0">
       <div className="flex-shrink-0 px-4 py-3 bg-gray-700">
         <button className="flex items-center block">
           <div className="h-8 w-8 relative">
@@ -50,4 +50,4 @@ function Header2(props: { callbackForMethod }) {
   );
 }
 
-export default Header2;
+export default Header;

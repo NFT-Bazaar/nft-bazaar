@@ -2,7 +2,7 @@ import React, { useState, createContext, useEffect, useContext } from "react";
 import Hashes from "jshashes";
 
 import * as constant from "./constant";
-import Header2 from "../components/header2";
+import Header2 from "../components/header";
 import Sidebar from "../components/side-bar";
 import PanelAccount from "../components/panel-account";
 import PanelSearch from "../components/panel-search";
@@ -44,12 +44,16 @@ import {
   initialStateTab,
 } from "../components/tab-bar";
 
+//----------------------------------------------------
+
 const Methods = {};
 const Callbacks = {};
 
 export function callbackForMethod(component, methods) {
   Methods[component] = methods;
 }
+
+//----------------------------------------------------
 
 export const MainContextProvider = ({ children }) => {
   const [stateSide, setStateSide] = useState({
@@ -85,7 +89,7 @@ export const MainContextProvider = ({ children }) => {
     items: initialStateAccount(),
     action: clickAccount,
   });
-  function clickAccount(action, account) {
+  function clickAccount(action, account, nftList) {
     if ((action = "click")) {
       var tab = stateTab.items.find((x) => x.key == "MyProfile");
       if (tab == undefined) {
@@ -99,16 +103,21 @@ export const MainContextProvider = ({ children }) => {
             setStateTab(tabs);
             resolve();
           });
-          Methods["tab"]("focus", { index: 0 });
+          setTimeout(() => {
+            Methods["tab"]("focus", { index: 0 });
+          }, 100);
         })();
       } else {
         Methods["tab"]("focus", { index: 0 });
       }
+
+      showNFTList(nftList);
     }
     var a = 0;
     console.log(account);
   }
 
+  function showNFTList(nftList) {}
   //----------------------------------------------------
 
   const [stateSearch, setStateSearch] = useState({

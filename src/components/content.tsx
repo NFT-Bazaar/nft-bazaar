@@ -5,8 +5,9 @@ import {
 } from "../context/main-context";
 
 import Tabbar from "./tab-bar";
-import CardDetail, { CardDetailProps } from "./card-detail";
+import CardDetail, { CardDetailProps } from "./card-nft";
 import Card1 from "./card1";
+import CardGrid from "./card-grid";
 import Card2 from "./card2";
 import Card3 from "./card3";
 import Card4 from "./card4";
@@ -26,16 +27,17 @@ const card: CardDetailProps = {
 
 function Content({}) {
   return (
-    <div className="px-0 py-0 text-gray-500 bg-gray-200 h-screen w-screen">
+    <div className="px-0 py-0 text-gray-500 bg-gray-200 w-screen">
       <Tabbar callbackForMethod={callbackForMethod}></Tabbar>
-      <CardDetail {...card}></CardDetail>
+      {/* <CardDetail {...card}></CardDetail>
       <Card1></Card1>
-      <Card2></Card2>
-      <Card3></Card3>
+      <Card2></Card2> */}
+      <CardGrid></CardGrid>
+      {/* <Card3></Card3>
       <Card4></Card4>
       <Card5></Card5>
       <Card6></Card6>
-      <CardDetail2></CardDetail2>
+      <CardDetail2></CardDetail2> */}
       {/* <div className="c2">
               <button className="b1" onClick={alchemy1}>
                 Alchemy1

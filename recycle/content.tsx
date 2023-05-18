@@ -1,8 +1,5 @@
 import react, { useState, useEffect, useRef, useContext, useId } from "react";
-import {
-  MainContextProvider,
-  callbackForMethod,
-} from "../context/main-context";
+import { MainContextProvider, setMethodsEvents } from "../context/main-context";
 
 import Tabbar from "./tab-bar";
 import CardDetail, { CardDetailProps } from "./card-nft";
@@ -28,7 +25,7 @@ const card: CardDetailProps = {
 function Content({}) {
   return (
     <div className="px-0 py-0 text-gray-500 bg-gray-200 w-screen">
-      <Tabbar callbackForMethod={callbackForMethod}></Tabbar>
+      <Tabbar setMethodsEvents={setMethodsEvents}></Tabbar>
       {/* <CardDetail {...card}></CardDetail>
       <Card1></Card1>
       <Card2></Card2> */}

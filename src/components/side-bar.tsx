@@ -1,20 +1,5 @@
-import react, {
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-  createContext,
-  useId,
-} from "react";
-import Link from "next/link";
+import react, { useRef, useContext, createContext } from "react";
 import Image from "next/image";
-
-// import LockedWallet from "./svgs/locked-wallet";
-
-type sideSide = {
-  image: string;
-  toggle: any;
-};
 
 interface ItemSide {
   name: string;
@@ -22,7 +7,6 @@ interface ItemSide {
 }
 export type ItemSideA = {
   items: ItemSide[];
-  action: (action: string, tab: ItemSide) => any;
 };
 export type SideContextType = {
   stateSide: ItemSideA;
@@ -32,20 +16,19 @@ export const SideContext = createContext<SideContextType | null>(null);
 
 export function initialStateSide(): ItemSide[] {
   return [
-    { name: "wallet", image: "/static/images/locked-wallet.svg" }, //, toggle: toggleWallet },
-    { name: "search", image: "/static/images/air-search.svg" }, //, toggle: toggleSearch },
-    { name: "exchange", image: "/static/images/exchange.svg" }, //, toggle: toggleExchange },
+    { name: "wallet", image: "/static/images/locked-wallet.svg" },
+    { name: "search", image: "/static/images/air-search.svg" },
+    { name: "exchange", image: "/static/images/exchange.svg" },
   ];
 }
 
-function Sidebar(props: { callbackForMethod }) {
+function Sidebar(props: { setMethodsEvents }) {
   const { stateSide, setStateSide } = useContext(
     SideContext
   ) as SideContextType;
 
-  const logo1 = "/static/images/logo1.png";
-
-  props.callbackForMethod("side", methods);
+  const events = props.setMethodsEvents("side", methods);
+  const sidebarContainerRef = useRef(null);
 
   return (
     <div className="flex flex-row w-16 sticky border-gray-200 bg-gray-200">
@@ -55,7 +38,7 @@ function Sidebar(props: { callbackForMethod }) {
         // style={{ backgroundColor: "#C2C238" }}   h-[calc(100vh)]
       >
         <div className="mt-8 w-12">
-          <ul className="place-self-center">
+          <ul ref={sidebarContainerRef} className="place-self-center">
             {[stateSide.items].flat().map((side: ItemSide) => (
               <li
                 key={side.name}
@@ -71,7 +54,7 @@ function Sidebar(props: { callbackForMethod }) {
                     className="rounded-full mx-auto"
                     alt="NFT Bazaar"
                     fill
-                    onClick={() => stateSide.action("click", side)}
+                    onClick={() => events({ action: "click", side })}
                   ></Image>
                 </div>
               </li>
@@ -83,14 +66,6 @@ function Sidebar(props: { callbackForMethod }) {
   );
 
   function methods(action: string, arg?: any) {}
-
-  // function handlePanels(toggle: any) {
-  //   if (toggle != toggleWallet) toggleWallet(false);
-  //   if (toggle != toggleSearch) toggleSearch(false);
-  //   if (toggle != toggleExchange) toggleExchange(false);
-
-  //   toggle();
-  // }
 }
 
 export default Sidebar;

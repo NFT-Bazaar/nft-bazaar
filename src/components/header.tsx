@@ -1,7 +1,6 @@
-import react from "react";
 import Image from "next/image";
 
-function Header(props: { callbackForMethod }) {
+function Header(props: {}) {
   const logo1 = "/static/images/logo1.png";
   const nftBazaar2 = "/static/images/nft-bazaar2.png";
 

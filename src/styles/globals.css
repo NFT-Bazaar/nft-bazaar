@@ -18,16 +18,8 @@
 }
 
 body {
+  /* background-image: url("/static/images/background.jpeg"); */
   position: relative;
   min-height: 100vh;
-  /* color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgb(var(--background-end-rgb))
-  ); */
+  overflow-x: hidden;
 }
-/* rgb(var(--background-start-rgb)); */
-/* svg {
-  color: white;
-} */

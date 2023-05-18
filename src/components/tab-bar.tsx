@@ -1,30 +1,24 @@
-import react, {
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-  createContext,
-  useId,
-} from "react";
+import react, { useRef, useContext, createContext } from "react";
 
-// import Hashes from "jshashes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import Hashes from "jshashes";
 
+export type Method = {
+  action: string;
+  tabs: ItemTabA;
+  index?: number;
+};
 export type ItemTab = {
   key: string;
   text: string;
   count: number;
-  definition: string;
 };
 export type ItemTabA = {
   items: ItemTab[];
-  action: (action: string, tab: ItemTab) => any;
 };
 export type TabContextType = {
   stateTab: ItemTabA;
-  setStateTab: (tabs: ItemTab[]) => void;
+  setStateTab: (tabs: ItemTabA) => void;
 };
 export const TabContext = createContext<TabContextType | null>(null); //(initialStateTab);
 
@@ -42,7 +36,6 @@ export function initialStateTab(): ItemTab[] {
     key: x.toString(),
     text: Math.random() < 0.5 ? "wallet" : "search",
     count: 4,
-    definition: "{ metamask: '' }",
   }));
 }
 
@@ -50,12 +43,12 @@ interface props {
   method: (action: any) => void;
 }
 
-function Tabbar(props: { callbackForMethod }) {
+function Tabbar(props: { setMethodsEvents }) {
   const { stateTab, setStateTab } = useContext(TabContext) as TabContextType;
 
-  const tabContainerRef = useRef(null);
+  const events = props.setMethodsEvents("tab", methods);
 
-  props.callbackForMethod("tab", methods);
+  const tabContainerRef = useRef(null);
 
   return (
     <div className="px-2 relative sm:block bg-gray-700 border-gray-200 items-start">
@@ -77,12 +70,12 @@ function Tabbar(props: { callbackForMethod }) {
               aria-current="page"
               className="inline-block py-2 px-4 text-gray-600 bg-gray-200 focus:bg-gray-100 hover:bg-gray-100 rounded-t-lg 
                 active dark:bg-gray-700 dark:text-gray-500"
-              onClick={() => stateTab.action("click", tab)}
+              onClick={() => events("click", tab)}
             >
               {tab ? tab.text : ""}
               <FontAwesomeIcon
                 icon={faTrash}
-                className="self-centercursor-pointer pl-4" // text-gray-800
+                className="self-center cursor-pointer pl-4"
                 onClick={() => removeTab(idx)}
               />
             </button>
@@ -92,65 +85,35 @@ function Tabbar(props: { callbackForMethod }) {
     </div>
   );
 
-  function methods(action: string, arg?: any) {
-    switch (action) {
+  function methods(method: Method) {
+    switch (method.action) {
       case "focus":
-        tabContainerRef.current.children[arg.index].focus();
+        tabContainerRef.current.children[method.index].focus();
+        break;
+      case "update":
+        (async () => {
+          await new Promise((resolve) => {
+            setStateTab(method.tabs);
+            resolve();
+          });
+          setTimeout(() => {
+            methods({
+              action: "focus",
+              index: method.index,
+              tabs: method.tabs,
+            });
+          }, 100);
+        })();
+      default:
         break;
     }
   }
 
   function removeTab(idx: number) {
     var data: ItemTab[] = stateTab.items.filter((tab, index) => index !== idx);
-    setStateTab({ items: data, action: stateTab.action });
+    setStateTab({ items: data });
+    events({ action: "removeTab", index: idx });
   }
-
-  //    document.querySelector(`[key=${key}]`).interHTML = "";
-  // setBars(data);
-
-  //     const listItemToRemove = document.querySelector('#list-item-to-remove');
-  // const unorderedList = document.querySelector('#my-list');
-
-  // if (listItemToRemove && unorderedList) {
-  //   unorderedList.removeChild(listItemToRemove);
-  // }
-  //}
 }
-
-// export function myProfileTab(stateTab: ItemTab[], accounts: Account[]) {
-//   if (stateTab.find((x) => x.key === "myProfile") == undefined) {
-//     const profileTab: ItemTab = {
-//       key: "myProfile",
-//       text: "myProfile",
-//       count: 0,
-//       definition: "",
-//     };
-//     const newTabs = [profileTab, ...tabs];
-//     setStateTab(newTabs);
-//   }
-// }
-// export function AddTab(bar: ItemBar) {
-//   var data: ItemBar[] = Array.from(new Set([...bars, ...bar]));
-//   setBars(data);
-
-//     var ul = document.querySelector(`[id="${id}"]`);
-//   //var : any = ul.children[ul.children.length - 1];
-//   ul.innerHTML += `<li className='mr-1' key=${
-//     Math.floor(Math.random() * 10e6) + 1
-//   }>
-//       <a
-//         href="#"
-//         aria-current="page"
-//         class="inline-block py-2 px-4 text-gray-600 bg-gray-200 focus:bg-gray-100 rounded-t-lg active dark:bg-gray-700 dark:text-gray-500"
-//       >
-//         ${bar.text}
-//       </a>
-//       <FontAwesomeIcon
-//         icon={faTrash}
-//         className="self-center text-gray-800 cursor-pointer px-4"
-//         onClick={() => RemoveTab(${Math.floor(Math.random() * 10e6) + 1})}
-//         />
-//     </li>`;
-//}
 
 export default Tabbar;

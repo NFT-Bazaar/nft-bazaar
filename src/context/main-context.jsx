@@ -1,27 +1,5 @@
-import React, { useState, createContext, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import Hashes from "jshashes";
-
-import * as constant from "./constant";
-import Header2 from "../components/header";
-import Sidebar from "../components/side-bar";
-import PanelAccount from "../components/panel-account";
-import PanelSearch from "../components/panel-search";
-import Content from "../components/content";
-import Footer from "../components/footer";
-
-import {
-  stateTypeSide,
-  setStateTypeSide,
-  ItemTab,
-} from "../components/side-bar";
-import {
-  stateTypeAccount,
-  setStateTypeAccount,
-} from "../components/panel-account";
-import {
-  stateTypeSearch,
-  setStateTypeSearch,
-} from "../components/panel-search";
 
 import {
   SideContext,
@@ -39,47 +17,96 @@ import {
   initialStateSearch,
 } from "../components/panel-search";
 import {
+  ExchangeContext,
+  ExchangeContextType,
+  initialStateExchange,
+} from "../components/panel-exchange";
+import {
   TabContext,
   TabContextType,
   initialStateTab,
 } from "../components/tab-bar";
+import {
+  CardContainerContext,
+  CardContainerContextType,
+  initialStateCardContainer,
+} from "../components/card-container";
+import {
+  CardGridContext,
+  CardGridContextType,
+  initialStateCardGrid,
+} from "../components/card-grid";
 
 //----------------------------------------------------
 
 const Methods = {};
-const Callbacks = {};
+var Events = {};
 
-export function callbackForMethod(component, methods) {
+export function setMethodsEvents(component, methods) {
   Methods[component] = methods;
+  return Events[component];
 }
 
 //----------------------------------------------------
 
 export const MainContextProvider = ({ children }) => {
+  Events = {
+    side: callbackSide,
+    account: callbackAccount,
+    search: callbackSearch,
+    exchange: callbackExchange,
+    tab: callbackTab,
+  };
+
+  //----------------------------------------------------
+
   const [stateSide, setStateSide] = useState({
     items: initialStateSide(),
-    action: clickSide,
   });
-  function clickSide(action, item) {
-    switch (item.name) {
-      case "wallet":
-        var newState = { ...stateAccount, isOpen: !stateAccount.isOpen };
-        setStateAccount(newState);
-        if (stateSearch.isOpen) {
-          newState = { ...stateSearch, isOpen: false };
-          setStateSearch(newState);
-        }
-        break;
-      case "search":
-        var newState = { ...stateSearch, isOpen: !stateSearch.isOpen };
-        setStateSearch(newState);
-        if (stateAccount.isOpen) {
-          newState = { ...stateAccount, isOpen: false };
+  function callbackSide({ action, side }) {
+    if ((action = "click")) {
+      switch (side.name) {
+        case "wallet":
+          var newState = { ...stateAccount, isOpen: !stateAccount.isOpen };
           setStateAccount(newState);
-        }
-        break;
+          if (stateSearch.isOpen) {
+            newState = { ...stateSearch, isOpen: false };
+            setStateSearch(newState);
+          }
+          if (stateExchange.isOpen) {
+            newState = { ...stateExchange, isOpen: false };
+            setStateExchange(newState);
+          }
+          break;
+        case "search":
+          var newState = { ...stateSearch, isOpen: !stateSearch.isOpen };
+          setStateSearch(newState);
+          if (stateAccount.isOpen) {
+            newState = { ...stateAccount, isOpen: false };
+            setStateAccount(newState);
+          }
+          if (stateExchange.isOpen) {
+            newState = { ...stateExchange, isOpen: false };
+            setStateExchange(newState);
+          }
+          break;
+        case "exchange":
+          var newState = { ...stateExchange, isOpen: !stateExchange.isOpen };
+          setStateExchange(newState);
+          if (stateAccount.isOpen) {
+            newState = { ...stateAccount, isOpen: false };
+            setStateAccount(newState);
+          }
+          if (stateSearch.isOpen) {
+            newState = { ...stateSearch, isOpen: false };
+            setStateSearch(newState);
+          }
+          break;
+        default:
+          break;
+      }
     }
-    console.log(item);
+    console.log(side);
   }
 
   //----------------------------------------------------
@@ -87,81 +114,107 @@ export const MainContextProvider = ({ children }) => {
   const [stateAccount, setStateAccount] = useState({
     isOpen: false,
     items: initialStateAccount(),
-    action: clickAccount,
   });
-  function clickAccount(action, account, nftList) {
+  function callbackAccount({ action, nftList }) {
     if ((action = "click")) {
-      var tab = stateTab.items.find((x) => x.key == "MyProfile");
+      var tab = stateTab.items.find((x, index) => x.key == "MyProfile");
       if (tab == undefined) {
-        tab = { key: "MyProfile", text: "Profile", count: 0, definition: "" };
-        var tabs = {
-          items: [...[tab].flat(), ...stateTab.items],
-          action: stateTab.action,
-        };
-        (async () => {
-          await new Promise((resolve) => {
-            setStateTab(tabs);
-            resolve();
-          });
-          setTimeout(() => {
-            Methods["tab"]("focus", { index: 0 });
-          }, 100);
-        })();
+        addTab0();
+        addCardContainer0(nftList);
       } else {
-        Methods["tab"]("focus", { index: 0 });
+        Methods["tab"]({ action: "focus", index: 0 });
+        Methods["cardContainer"]({ action: "focus", index: 0 });
       }
-
-      showNFTList(nftList);
     }
-    var a = 0;
-    console.log(account);
+    console.log(action);
   }
 
-  function showNFTList(nftList) {}
+  function addTab0() {
+    var tab = { key: "MyProfile", text: "Profile", count: 0 };
+    var tabs = {
+      items: [...[tab].flat(), ...stateTab.items],
+      action: stateTab.action,
+    };
+    Methods["tab"]({ action: "update", tabs, index: 0 });
+  }
+  function addCardContainer0(nftList) {
+    var cardGrid = { key: "MyProfile", searchString: "", nftList: nftList };
+    var cardContainer = {
+      items: [...[cardGrid].flat(), ...stateCardContainer.items],
+      action: stateCardContainer.action,
+    };
+    Methods["cardContainer"]({ action: "update", cardContainer, index: 0 });
+  }
+
   //----------------------------------------------------
 
   const [stateSearch, setStateSearch] = useState({
     isOpen: false,
     items: initialStateSearch(),
-    action: clickSearch,
   });
-  function clickSearch(action, searchString) {
+  function callbackSearch({ action, searchString, nftList }) {
     if ((action = "click")) {
       var MD5 = new Hashes.MD5();
       var key = MD5.hex(searchString);
       var tab = stateTab.items.find((x, index) => x.key == key);
       if (tab == undefined) {
         var index = stateTab.items.length;
-        tab = { key: key, text: "Search", count: 0, definition: searchString };
-        var tabs = {
-          items: [...stateTab.items, ...[tab].flat()],
-          action: stateTab.action,
-        };
-        (async () => {
-          await new Promise((resolve) => {
-            setStateTab(tabs);
-            resolve();
-          });
-          Methods["tab"]("focus", { index: index });
-        })();
+        addTab({ index, key });
+        addCardContainer({ index, key, searchString, nftList });
       } else {
-        Methods["tab"]("focus", { index: index });
+        Methods["tab"]({ action: "focus", index });
+        Methods["cardContainer"]({ action: "focus", index });
       }
     }
-    var a = 0;
     console.log(searchString);
   }
+  function addTab({ index, key }) {
+    var tab = { key: key, text: `Search ${index}`, count: 0 };
+    var tabs = {
+      items: [...stateTab.items, ...[tab].flat()],
+      action: stateTab.action,
+    };
+    Methods["tab"]({ action: "update", tabs, index });
+  }
+  function addCardContainer({ index, key, searchString, nftList }) {
+    var cardGrid = { key: key, searchString: searchString, nftList: nftList };
+    var cardContainer = {
+      items: [...stateCardContainer.items, ...[cardGrid].flat()],
+      action: stateCardContainer.action,
+    };
+    Methods["cardContainer"]({ action: "update", cardContainer, index });
+  }
+
+  //----------------------------------------------------
+
+  const [stateExchange, setStateExchange] = useState({
+    isOpen: false,
+    items: initialStateExchange(),
+  });
+  function callbackExchange({ action, index }) {}
 
   //----------------------------------------------------
 
   const [stateTab, setStateTab] = useState({
     items: initialStateTab(),
-    action: clickTab,
   });
-  function clickTab(action, item) {
-    var a = 0;
-    console.log(item);
+  function callbackTab({ action, index }) {
+    if ((action = "remove")) {
+      Methods["cardContainer"]({ action: "remove", index });
+    }
   }
+
+  //----------------------------------------------------
+
+  const [stateCardContainer, setStateCardContainer] = useState({
+    items: initialStateCardContainer(),
+  });
+
+  //----------------------------------------------------
+
+  const [stateCardGrid, setStateCardGrid] = useState({
+    items: initialStateCardGrid(),
+  });
 
   //----------------------------------------------------
 
@@ -177,57 +230,36 @@ export const MainContextProvider = ({ children }) => {
     stateSearch,
     setStateSearch,
   };
+  const contextValueExchange = {
+    stateExchange,
+    setStateExchange,
+  };
   const contextValueTab = {
     stateTab,
     setStateTab,
   };
-
-  //   return (
-  //     <main className="min-h-screen flex flex-col">
-  //       <SearchContext.Provider value={contextValueSearch}>
-  //         {}
-  //       </SearchContext.Provider>
-  //       <contextValueTab.Provider value={contextValueTab}>
-  //         {}
-  //       </contextValueTab.Provider>
-
-  //       <Header2></Header2>
-
-  //       <div className="flex flex-col md:flex-row flex-1">
-  //         <SideContext.Provider value={contextValueSide}>
-  //           <Sidebar></Sidebar>
-  //         </SideContext.Provider>
-  //         <AccountContext.Provider value={contextValueAccount}>
-  //           <PanelAccount></PanelAccount>
-  //         </AccountContext.Provider>
-  //         <PanelSearch></PanelSearch>
-  //         <Content></Content>
-  //       </div>
-  //       <Footer></Footer>
-  //     </main>
-  //   );
-  // };
-
-  // const [stateExchange, setStateExchange] = useState({
-  //   items: initialStateExchange(),
-  //   action: clickExchange,
-  // });
-  // const contextValueExchange = {
-  //   stateExchange,
-  //   setStateExchange,
-  // };
-  // function clickExchange(action, item) {
-  //   var a = 0;
-  //   console.log(item);
-  // }
+  const contextValueCardContainer = {
+    stateCardContainer,
+    setStateCardContainer,
+  };
+  const contextValueCardGrid = {
+    stateCardGrid,
+    setStateCardGrid,
+  };
 
   return (
     <SideContext.Provider value={contextValueSide}>
       <AccountContext.Provider value={contextValueAccount}>
         <SearchContext.Provider value={contextValueSearch}>
-          <TabContext.Provider value={contextValueTab}>
-            {children}
-          </TabContext.Provider>
+          <ExchangeContext.Provider value={contextValueExchange}>
+            <TabContext.Provider value={contextValueTab}>
+              <CardContainerContext.Provider value={contextValueCardContainer}>
+                <CardGridContext.Provider value={contextValueCardGrid}>
+                  {children}
+                </CardGridContext.Provider>
+              </CardContainerContext.Provider>
+            </TabContext.Provider>
+          </ExchangeContext.Provider>
         </SearchContext.Provider>
       </AccountContext.Provider>
     </SideContext.Provider>

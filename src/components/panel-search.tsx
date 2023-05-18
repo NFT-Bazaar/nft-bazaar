@@ -1,34 +1,23 @@
-import react, {
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-  createContext,
-  useId,
-} from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Sidenav, initTE } from "tw-elements";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faAmbulance,
-  faAnchor,
-  faChevronDown,
-  faChevronUp,
-  faCopy,
-} from "@fortawesome/free-solid-svg-icons";
-import { AnyARecord } from "dns";
+import react, { useRef, useContext, createContext } from "react";
+import axios from "axios";
 
 export type Search = {
   name: string;
   title: string;
   value: any;
 };
+export type Method = {
+  action: string;
+  arg: any;
+};
+export type Action = {
+  action: string;
+  searchString: string;
+  nftList: any;
+};
 export type SearchA = {
   isOpen: boolean;
   items: [];
-  action: (action: string, search: any) => any;
 };
 export type SearchContextType = {
   stateSearch: SearchA;
@@ -47,23 +36,25 @@ const searchs: Search[] = [
 ];
 const switches: Search[] = [{ name: "online", title: "online", value: false }];
 
-function PanelSearch(props: { callbackForMethod }) {
+function PanelSearch(props: { setMethodsEvents }) {
   const { stateSearch, setStateSearch } = useContext(
     SearchContext
   ) as SearchContextType;
 
-  props.callbackForMethod("search", methods);
+  const events = props.setMethodsEvents("search", methods);
+  const searchContainerRef = useRef(null);
 
   return (
     <div
-      className={`border-r-2 border-gray-200 text-gray-500 rounded-tr ${
-        stateSearch.isOpen ? "w-1/4" : "w-0"
-      }`}
+      className={`text-gray-500 ${stateSearch.isOpen ? "w-1/4" : "w-0"}`}
       style={{ transition: "width 0.5s" }}
     >
-      <div className="flex space-x-4 border-b-2 p-2 border-gray-200 h-16 place-content-center bg-gray-200"></div>
+      <div className="h-16 bg-gray-200"></div>
 
-      <div className="w-100 w-full max-w-sm h-screen pt-6 px-4 border-r-2 border-gray-200 pt-14">
+      <div
+        ref={searchContainerRef}
+        className="w-full max-w-sm h-screen p-4 overflow-x-hidden whitespace-nowrap"
+      >
         {searchs.map((item, index) => (
           <div key={"search-t-" + index} className="mb-4">
             <label className="block text-gray-500 text-sm font-bold mb-2 whitespace-nowrap">
@@ -102,7 +93,7 @@ function PanelSearch(props: { callbackForMethod }) {
         ))}
         <button
           className="w-full bg-gray-700 text-white text-sm font-bold py-2 px-4 rounded-md transition duration-300"
-          onClick={() => stateSearch.action("click", getSearchString())}
+          onClick={() => getNFTList()}
         >
           Search
         </button>
@@ -110,7 +101,12 @@ function PanelSearch(props: { callbackForMethod }) {
     </div>
   );
 
-  function methods(action: string, arg: any) {}
+  function methods(method: Method) {
+    switch (method.action) {
+      case "":
+        break;
+    }
+  }
 
   function getSearchString() {
     searchs.forEach((x, index) => {
@@ -137,23 +133,142 @@ function PanelSearch(props: { callbackForMethod }) {
 
     return queryTexts.join(" AND ");
   }
+
+  async function getNFTList() {
+    var searchString = getSearchString();
+    var response = { data: getSample() };
+    // var response = await axios.get(
+    //   `http://localhost:3000/api/nftlisted?searchString=${searchString}`
+    // );
+    if (response.data && response.data.length > 0) {
+      //stateSearch.action({
+      events({ action: "click", searchString, nftList: response.data });
+    }
+  }
+  function getSample() {
+    return [
+      {
+        metadata: {
+          contract: {
+            address: "0x6cd7c2200152ccc2d23dcad5859e4d9690ec312b",
+            name: "Test for Arbitrum Goerli",
+            symbol: "AGO",
+            totalSupply: "4",
+            tokenType: "ERC721",
+            openSea: { lastIngestedAt: "2023-05-16T07:57:17.000Z" },
+            contractDeployer: "0xc5331cc3bbe5a060de7d851ff33c2c5f1b611f16",
+            deployedBlockNumber: 35655393,
+          },
+          tokenId: "2",
+          tokenType: "ERC721",
+          title: "",
+          description: "",
+          timeLastUpdated: "2023-05-18T09:16:23.628Z",
+          metadataError: "Malformed token uri, do not retry",
+          rawMetadata: { metadata: [], attributes: [] },
+          tokenUri: {
+            gateway: "",
+            raw: "QmRiCHRcAwFiHovX1Jbghr1oXUffDVgaixxfH6CBUnjydW2.json",
+          },
+          media: [],
+          balance: 1,
+        },
+        nft: {
+          description: "Test NFT Collection - Rock",
+          external_url: "",
+          image: "ipfs://QmSDUDQKDcQR1BqgGHZKJ5GTZuGCsUejkPyLJ6MMQS3zQS/2.json",
+          name: "Rock",
+          attributes: [
+            { trait_type: "Base", value: "Rock" },
+            { trait_type: "Background", value: "Gray" },
+            { display_type: "number", trait_type: "Generation", value: 2 },
+          ],
+        },
+        image:
+          "https://gateway.pinata.cloud/ipfs/QmSDUDQKDcQR1BqgGHZKJ5GTZuGCsUejkPyLJ6MMQS3zQS/2.jpg",
+      },
+      {
+        metadata: {
+          contract: {
+            address: "0x6cd7c2200152ccc2d23dcad5859e4d9690ec312b",
+            name: "Test for Arbitrum Goerli",
+            symbol: "AGO",
+            totalSupply: "4",
+            tokenType: "ERC721",
+            openSea: { lastIngestedAt: "2023-05-16T07:57:17.000Z" },
+            contractDeployer: "0xc5331cc3bbe5a060de7d851ff33c2c5f1b611f16",
+            deployedBlockNumber: 35655393,
+          },
+          tokenId: "3",
+          tokenType: "ERC721",
+          title: "",
+          description: "",
+          timeLastUpdated: "2023-05-18T09:16:23.628Z",
+          metadataError: "Malformed token uri, do not retry",
+          rawMetadata: { metadata: [], attributes: [] },
+          tokenUri: {
+            gateway: "",
+            raw: "QmRiCHRcAwFiHovX1Jbghr1oXUffDVgaixxfH6CBUnjydW3.json",
+          },
+          media: [],
+          balance: 1,
+        },
+        nft: {
+          description: "Test NFT Collection - Dog",
+          external_url: "",
+          image: "ipfs://QmSDUDQKDcQR1BqgGHZKJ5GTZuGCsUejkPyLJ6MMQS3zQS/3.json",
+          name: "Dog",
+          attributes: [
+            { trait_type: "Base", value: "Dog" },
+            { trait_type: "Background", value: "Brown" },
+            { display_type: "number", trait_type: "Generation", value: 3 },
+          ],
+        },
+        image:
+          "https://gateway.pinata.cloud/ipfs/QmSDUDQKDcQR1BqgGHZKJ5GTZuGCsUejkPyLJ6MMQS3zQS/3.jpg",
+      },
+      {
+        metadata: {
+          contract: {
+            address: "0x6cd7c2200152ccc2d23dcad5859e4d9690ec312b",
+            name: "Test for Arbitrum Goerli",
+            symbol: "AGO",
+            totalSupply: "4",
+            tokenType: "ERC721",
+            openSea: { lastIngestedAt: "2023-05-16T07:57:17.000Z" },
+            contractDeployer: "0xc5331cc3bbe5a060de7d851ff33c2c5f1b611f16",
+            deployedBlockNumber: 35655393,
+          },
+          tokenId: "4",
+          tokenType: "ERC721",
+          title: "",
+          description: "",
+          timeLastUpdated: "2023-05-18T09:16:23.624Z",
+          metadataError: "Malformed token uri, do not retry",
+          rawMetadata: { metadata: [], attributes: [] },
+          tokenUri: {
+            gateway: "",
+            raw: "QmRiCHRcAwFiHovX1Jbghr1oXUffDVgaixxfH6CBUnjydW4.json",
+          },
+          media: [],
+          balance: 1,
+        },
+        nft: {
+          description: "Test NFT Collection - Fox",
+          external_url: "",
+          image: "ipfs://QmSDUDQKDcQR1BqgGHZKJ5GTZuGCsUejkPyLJ6MMQS3zQS/4.json",
+          name: "Fox",
+          attributes: [
+            { trait_type: "Base", value: "Fox" },
+            { trait_type: "Background", value: "Brown" },
+            { display_type: "number", trait_type: "Generation", value: 4 },
+          ],
+        },
+        image:
+          "https://gateway.pinata.cloud/ipfs/QmSDUDQKDcQR1BqgGHZKJ5GTZuGCsUejkPyLJ6MMQS3zQS/4.jpg",
+      },
+    ];
+  }
 }
-
-// export function toggleSearch(toggle?: boolean) {
-//   // if (rootRef.current) {
-//   // }
-//   var tag = document.getElementById(panelSearchId);
-//   if (!tag) return;
-
-//   var isOpen = true;
-//   if (tag.classList.contains("w-0")) isOpen = false;
-//   if (toggle === false || isOpen) {
-//     tag.classList.add("w-0");
-//     tag.classList.remove("w-1/4");
-//   } else {
-//     tag.classList.add("w-1/4");
-//     tag.classList.remove("w-0");
-//   }
-// }
 
 export default PanelSearch;

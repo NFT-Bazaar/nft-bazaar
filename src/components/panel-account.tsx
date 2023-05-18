@@ -1,33 +1,14 @@
-import react, {
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-  createContext,
-  useId,
-} from "react";
+import react, { useRef, useContext, createContext } from "react";
+import axios from "axios";
 
 import Image from "next/image";
 import Link from "next/link";
-import { Sidenav, initTE } from "tw-elements";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faAmbulance,
-  faAnchor,
-  faChevronDown,
-  faChevronUp,
-  faCopy,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Icon } from "@iconify/react";
 
 import connectKeplr from "../scripts/keplr";
 import connectMetamask from "../scripts/metamask";
-
-import getNFTAlchemy from "../scripts/alchemy";
-import getNFTMoralis from "../scripts/moralis";
-import getNFTThirdweb from "../scripts/thirdweb";
 
 import { Vampiro_One } from "next/font/google";
 
@@ -45,10 +26,17 @@ export type Account = {
   image: string;
   account: string;
 };
+export type Method = {
+  action: string;
+  arg: any;
+};
+export type Action = {
+  action: string;
+  nftList: {};
+};
 export type AccountA = {
   items: Account[];
   isOpen: boolean;
-  action: (action: string, account: Account, nftList: {}) => any;
 };
 export type AccountContextType = {
   stateAccount: AccountA;
@@ -97,21 +85,23 @@ interface props {
   method: (action: any) => void;
 }
 
-function PanelAccount(props: { callbackForMethod }) {
+function PanelAccount(props: { setMethodsEvents }) {
   const { stateAccount, setStateAccount } = useContext(
     AccountContext
   ) as AccountContextType;
 
-  props.callbackForMethod("account", methods);
+  const events = props.setMethodsEvents("account", methods);
+  const accountContainerRef = useRef(null);
 
   return (
     <div
-      className={`border-r-2 border-gray-200 text-gray-500 rounded-tr ${
-        stateAccount.isOpen ? "w-1/4" : "w-0"
-      }`}
+      className={`text-gray-500 ${stateAccount.isOpen ? "w-1/4" : "w-0"}`}
       style={{ transition: "width 0.5s" }}
     >
-      <div className="flex space-x-4 border-b-2 p-2 border-gray-200 h-16 place-content-center bg-gray-200 rounded-tr overflow-x-hidden whitespace-nowrap">
+      <div
+        ref={accountContainerRef}
+        className="flex space-x-4 p-2 h-16 place-content-center bg-gray-200 overflow-x-hidden whitespace-nowrap"
+      >
         {wallets.map((x, index) => (
           <div
             key={x.name}
@@ -131,57 +121,55 @@ function PanelAccount(props: { callbackForMethod }) {
           </div>
         ))}
       </div>
-      <nav className="h-screen w-70 pt-2">
-        <ul className="relative m-0 list-none" data-te-sidenav-menu-ref>
-          {[stateAccount.items].flat().map((account: Account, idx: number) => (
-            <li
-              index={idx}
-              key={account.account}
-              className="flex flex-row relative overflow-x-hidden whitespace-nowrap"
-            >
-              <button
-                className="flex flex-auto h-10 cursor-pointer items-center truncate rounded-[5px] px-4 py-2 text-[0.8rem] text-gray-500 
+      <ul className="h-screen w-full relative list-none p-4 overflow-x-hidden whitespace-nowrap">
+        {[stateAccount.items].flat().map((account: Account, idx: number) => (
+          <li
+            index={idx}
+            key={account.account}
+            className="flex flex-row relative overflow-x-hidden whitespace-nowrap"
+          >
+            <button
+              className="flex flex-auto h-10 cursor-pointer items-center truncate rounded-[5px] px-4 py-2 text-[0.8rem] text-gray-500 
                 hover:bg-slate-50 hover:text-inherit hover:outline-none"
-                data-te-sidenav-link-ref
-                onClick={() => getNFTs(account)}
-              >
-                {account.image && (
-                  <div className="mr-[0.8rem] h-6 w-6 relative">
-                    <Image
-                      src={account.image}
-                      className="relative select-none"
-                      alt="NFT Bazaar"
-                      fill
-                    ></Image>
-                  </div>
-                )}
-                <span className="font-medium text-gray-500">
-                  {ellipsisHash(account.account)}
-                </span>
-              </button>
-              {/* <Icon
+              data-te-sidenav-link-ref
+              onClick={() => getNFTList()}
+            >
+              {account.image && (
+                <div className="mr-[0.8rem] h-6 w-6 relative">
+                  <Image
+                    src={account.image}
+                    className="relative select-none"
+                    alt="NFT Bazaar"
+                    fill
+                  ></Image>
+                </div>
+              )}
+              <span className="font-medium text-gray-500">
+                {ellipsisHash(account.account)}
+              </span>
+            </button>
+            {/* <Icon
                 icon="ph:copy-light"
                 className="self-center text-gray-800 cursor-pointer px-4"
               /> */}
-              <FontAwesomeIcon
-                icon={faCopy}
-                className="self-center text-gray-800 cursor-pointer px-4"
-                onClick={() => navigator.clipboard.writeText(account.account)}
-              />
-              <FontAwesomeIcon
-                icon={faTrash}
-                className="self-center text-gray-800 cursor-pointer px-4"
-                onClick={() => removeAccount(account.account)}
-              />
-            </li>
-          ))}
-        </ul>
-      </nav>
+            <FontAwesomeIcon
+              icon={faCopy}
+              className="self-center text-gray-800 cursor-pointer p-2 rounded-[5px] hover:bg-slate-50 hover:text-inherit hover:outline-none"
+              onClick={() => navigator.clipboard.writeText(account.account)}
+            />
+            <FontAwesomeIcon
+              icon={faTrash}
+              className="self-center text-gray-800 cursor-pointer p-2 rounded-[5px] hover:bg-slate-50 hover:text-inherit hover:outline-none"
+              onClick={() => removeAccount(account.account)}
+            />
+          </li>
+        ))}
+      </ul>
     </div>
   );
 
-  function methods(action: string, arg: any) {
-    switch (action) {
+  function methods(method: Method) {
+    switch (method.action) {
       case "":
         break;
     }
@@ -234,7 +222,6 @@ function PanelAccount(props: { callbackForMethod }) {
     setStateAccount({
       items: uniqueList,
       isOpen: stateAccount.isOpen,
-      action: stateAccount.action,
     });
   }
 
@@ -242,42 +229,13 @@ function PanelAccount(props: { callbackForMethod }) {
     return hash.slice(0, 8) + " ... " + hash.slice(-6);
   }
 
-  async function getNFTs(account: Account) {
-    var nftList = {
-      alchemy: [],
-      moralis: [],
-      thirdweb: [],
-    };
-    nftList = await listNFTs(account);
-    stateAccount.action("click", account, nftList);
-  }
-
-  async function listNFTs(account: Account) {
-    var nftList = {
-      alchemy: [],
-      moralis: [],
-      thirdweb: [],
-    };
-
-    var result = [];
-    await Promise.all(
-      stateAccount.items.map(async () => {
-        await new Promise((resolve) => {
-          getNFTAlchemy(account.account).then((tempResult) => {
-            result = result.concat(tempResult);
-            resolve();
-          });
-        });
-      })
+  async function getNFTList() {
+    var accounts = stateAccount.items.map((item) => item.account).join(" ");
+    var response = await axios.get(
+      //${process.env.BASE_URL}
+      `http://localhost:3000/api/nftlist?accounts=${accounts}`
     );
-
-    nftList.alchemy = nftList.alchemy.concat(result);
-
-    // stateAccount.items.forEach(async (account) => {
-    //   const result = await getNFTMoralis(account.account);
-    //   nftList.moralis = result === undefined ? [] : result;
-    // });
-    return nftList;
+    events({ action: "click", nftList: response.data });
   }
 
   function removeAccount(account: string) {
@@ -287,7 +245,6 @@ function PanelAccount(props: { callbackForMethod }) {
     setStateAccount({
       items: data,
       isOpen: stateAccount.isOpen,
-      action: stateAccount.action,
     });
   }
 }

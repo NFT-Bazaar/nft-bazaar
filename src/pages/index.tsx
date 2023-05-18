@@ -1,38 +1,22 @@
-import React, { useState, createContext, useEffect, useContext } from "react";
+import React from "react";
 
-import Image from "next/image";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
-
-import alchemy1 from "../scripts/alchemy1.js";
-import alchemy2 from "../scripts/alchemy2.js";
-import alchemyAxelar from "../scripts/alchemyAxelar.js";
-// import connetMetamask from "../scripts/metamask.js";
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 
 import Header from "../components/header";
-import Side from "../components/side-bar";
+import Sidebar from "../components/side-bar";
 import PanelAccount from "../components/panel-account";
 import PanelSearch from "../components/panel-search";
-import Content from "../components/content";
+import PanelExchange from "../components/panel-exchange";
+import CardContainer from "../components/card-container";
 import Footer from "../components/footer";
 
-import { SideContext } from "../components/side-bar";
-import { AccountContext } from "../components/panel-account";
-import { SearchContext } from "../components/panel-search";
-import { TabContext } from "../components/tab-bar";
-
-import {
-  MainContextProvider,
-  callbackForMethod,
-  // sideCallback,
-  // accountCallback,
-  // searchCallback,
-} from "../context/main-context";
+import { MainContextProvider, setMethodsEvents } from "../context/main-context";
 
 import { cookies } from "next/headers";
 
@@ -46,14 +30,14 @@ export default function Home() {
   return (
     <MainContextProvider>
       <>
-        {/* h-screen */}
-        <Header callbackForMethod={callbackForMethod}></Header>
+        <Header setMethodsEvents={setMethodsEvents}></Header>
         <main className="min-h-screen flex flex-col top-16 overflow-x-hidden">
           <div className="flex flex-col md:flex-row flex-1mb-auto pb-28">
-            <Side callbackForMethod={callbackForMethod}></Side>
-            <PanelAccount callbackForMethod={callbackForMethod}></PanelAccount>
-            <PanelSearch callbackForMethod={callbackForMethod}></PanelSearch>
-            <Content></Content>
+            <Sidebar setMethodsEvents={setMethodsEvents}></Sidebar>
+            <PanelAccount setMethodsEvents={setMethodsEvents}></PanelAccount>
+            <PanelSearch setMethodsEvents={setMethodsEvents}></PanelSearch>
+            <PanelExchange setMethodsEvents={setMethodsEvents}></PanelExchange>
+            <CardContainer setMethodsEvents={setMethodsEvents}></CardContainer>
           </div>
           <Footer></Footer>
         </main>

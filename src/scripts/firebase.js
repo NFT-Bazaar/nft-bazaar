@@ -142,3 +142,21 @@ export function getNFTs(props) {
       console.error(error);
     });
 }
+
+
+export function getAllNFTs() {
+  const dbRef = ref(db);
+  get(child(dbRef, "NFT/"))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+		console.log(snapshot.val());
+        console.log(snapshot.val());
+        return snapshot.val();
+      } else {
+        console.log("No data available");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}

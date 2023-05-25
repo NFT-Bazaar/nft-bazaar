@@ -9,6 +9,8 @@ import {
   get,
 } from "firebase/database";
 import React, { useState, useEffect } from "react";
+import { toast } from 'react-toastify';
+
 
 export function SendOffer(props) {
   const { Nftaddress_1, Nftaddress_2, FromUser, toUser } = props;
@@ -28,24 +30,30 @@ export function SendOffer(props) {
 }
 
 export function ReceiveNotification(props) {
-  const { toUser } = props;
+  const { toUser, onNotificationReceived } = props;
 
-  //   useEffect(() => {
+    // useEffect(() => {
   const starCountRef = ref(db, toUser);
   onValue(
     starCountRef,
     (snapshot) => {
       const data = snapshot.val();
-      const values = Object.values(data);
-      const lastValue = values[values.length - 1];
-      console.log(lastValue);
-      //   return lastValue;
+      if (data){
+        const values = Object.values(data);
+        const lastValue = values[values.length - 1];
+        console.log(lastValue);
+        onNotificationReceived(lastValue);
+        // toast.info(lastValue); // Show a toast notification with the last value
+      }
+
     },
     (error) => {
       console.log("Error fetching notification:", error);
     }
   );
+  
   // }, [toUser]);
+  return null; 
 }
 
 export function RemoveOffer(props) {
